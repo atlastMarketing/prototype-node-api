@@ -4,6 +4,7 @@
   "description": "A basic starter for an express.js API",
   "main": "index.js",
   "scripts": {
+    "ig": "node src/api/instagram.js",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint --fix src",
@@ -21,8 +22,9 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.0.1",
-    "instagram-web-api": "^2.2.2",
-    "morgan": "^1.10.0"
+    "instagram-private-api": "^1.45.3",
+    "morgan": "^1.10.0",
+    "request-promise": "^4.2.6"
   },
   "devDependencies": {
     "eslint": "^8.32.0",

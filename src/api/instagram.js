@@ -1,28 +1,29 @@
-const Instagram = require('instagram-web-api');
+const { IgApiClient } = require('instagram-private-api');
+const { get } = require('request-promise');
 
-require("dotenv").config();
-
-const client = new Instagram(
-    {
-        username: process.env.INSTAGRAM_USERNAME,
-        password: process.env.INSTAGRAM_PASSWORD,
-    },
-    {
-        language: "en-US",
-    }
-);
+require('dotenv').config();
 
 async function login() {
-    console.log("Logging in...");
+    const ig = new IgApiClient();
+    ig.state.generateDevice(process.env.INSTAGRAM_USERNAME);
+    await ig.account.login(process.env.INSTAGRAM_USERNAME, process.env.INSTAGRAM_PASSWORD);
+    return ig;
+}
 
-    await client.login().then(() => {
-        console.log("Login successful!");
-    }).catch((err) => {
-        console.log("Login failed!");
-        console.log(err);
-    })
+async function post(imageUrl, caption) {
+    const ig = await login();
+
+    const imageBuffer = await get({
+        url: imageUrl,
+        encoding: null,
+    });
+
+    await ig.publish.photo({
+        file: imageBuffer,
+        caption: caption,
+    });
 }
 
 module.exports = {
-    login,
+    post,
 };
