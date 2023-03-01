@@ -16,7 +16,7 @@ async function login() {
 }
 
 /**
- * Create a new instagram post
+ * Create a new instagram post after logging in with the env credentials
  * 
  * @param {string} imageUrl The location of the jpg image to post 
  * @param {string} caption The caption of the post 
