@@ -1,7 +1,9 @@
 const express = require('express');
 
 const emojis = require('./emojis');
-const instagram = require('./instagram');
+const Instagram = require('./instagram');
+
+require('dotenv').config();
 
 const router = express.Router();
 
@@ -11,7 +13,7 @@ router.get('/', (req, res) => {
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const content = req.body;
 
   /* eslint-disable no-console */
@@ -21,7 +23,13 @@ router.post('/', (req, res) => {
 
   const imageUrl = content.imageUrl;
   const caption = content.caption;
-  instagram.post(imageUrl, caption);
+
+  const instagram = await new Instagram(
+    process.env.INSTAGRAM_USERNAME,
+    process.env.INSTAGRAM_PASSWORD
+  );
+
+  await instagram.post(imageUrl, caption);
 
   console.log("Post successful!");
   /* eslint-enable no-console */

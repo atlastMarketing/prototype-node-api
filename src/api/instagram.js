@@ -1,46 +1,49 @@
 const { IgApiClient } = require('instagram-private-api');
 const { get } = require('request-promise');
 
-require('dotenv').config();
 
 /**
- * Login to the instagram account specified in the .env file
- * 
- * @returns {IgApiClient} The instagram api client
+ * An API client for a specific Instagram account
  */
-async function login() {
-    const ig = new IgApiClient();
-    ig.state.generateDevice(process.env.INSTAGRAM_USERNAME);
-    await ig.account.login(process.env.INSTAGRAM_USERNAME, process.env.INSTAGRAM_PASSWORD);
-    return ig;
+class Instagram {
+    /**
+     * Initializes the class
+     * 
+     * @param {string} username The username of the instagram account to login to
+     * @param {string} password The password of the instagram account to login to
+     * @returns {Promise<Instagram>} A promise of an initialized instance of this class
+     */
+    constructor(username, password) {
+        this.client = new IgApiClient();
+        this.client.state.generateDevice(username);
+
+        return new Promise(async (resolve) => {
+            await this.client.account.login(username, password);
+            resolve(this);
+        });
+    }
+
+    /**
+     * Create a new instagram post
+     * 
+     * Example:
+     * 
+     * post("https://images.unsplash.com/photo-1533450718592-29d45635f0a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8anBnfGVufDB8fDB8fA%3D%3D&w=1000&q=80", "My post.");
+     * 
+     * @param {string} imageUrl The location of the jpg image to post 
+     * @param {string} caption The caption of the post 
+     */
+    async post(imageUrl, caption) {
+        const imageBuffer = await get({
+            url: imageUrl,
+            encoding: null,
+        });
+
+        await this.client.publish.photo({
+            file: imageBuffer,
+            caption: caption,
+        });
+    }
 }
 
-/**
- * Create a new instagram post
- * 
- * @param {string} imageUrl The location of the jpg image to post 
- * @param {string} caption The caption of the post 
- */
-async function post(imageUrl, caption) {
-    const ig = await login();
-
-    const imageBuffer = await get({
-        url: imageUrl,
-        encoding: null,
-    });
-
-    await ig.publish.photo({
-        file: imageBuffer,
-        caption: caption,
-    });
-}
-
-/**
- * Example of post:
- * 
- * post("https://images.unsplash.com/photo-1533450718592-29d45635f0a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8anBnfGVufDB8fDB8fA%3D%3D&w=1000&q=80", "My post.");
- */
-
-module.exports = {
-    post,
-};
+module.exports = Instagram;
