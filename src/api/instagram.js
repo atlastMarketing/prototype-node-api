@@ -4,7 +4,7 @@ const { get } = require('request-promise');
 require('dotenv').config();
 
 /**
- * Login to an instagram account with the environment credentials
+ * Login to the instagram account specified in the .env file
  * 
  * @returns {IgApiClient} The instagram api client
  */
@@ -16,7 +16,7 @@ async function login() {
 }
 
 /**
- * Create a new instagram post after logging in with the env credentials
+ * Create a new instagram post
  * 
  * @param {string} imageUrl The location of the jpg image to post 
  * @param {string} caption The caption of the post 
