@@ -1,5 +1,6 @@
 const { Configuration, OpenAIApi } = require('openai');
 const router = require('express').Router();
+const { handleGPTError, APIError } = require('../_error');
 
 require('dotenv').config();
 
@@ -18,7 +19,7 @@ const _fetchCompletion = async (prompt, temperature = 0.6) => {
         });
         return completion.data;
     } catch (err) {
-        throw new Error('Open API Error');
+        return handleGPTError(err);
     }
 };
 
@@ -29,12 +30,7 @@ const createCaption = async (req, res) => {
         } = req.body;
 
         // VALIDATION
-        if (!prompt) {
-            throw new Error({
-                status: 400,
-                message: 'Prompt not provided',
-            });
-        }
+        if (!prompt) throw new APIError('Prompt was not given!', 400);
 
         // FETCH GPT3
         const completionData = await _fetchCompletion(
@@ -44,7 +40,7 @@ const createCaption = async (req, res) => {
         // RETURN
         res.status(200).json(completionData);
     } catch (err) {
-        res.status(err.status || 400).json(JSON.stringify(err, Object.getOwnPropertyNames(err)));
+        res.status(err.status || 400).json(err);
     }
 };
 
