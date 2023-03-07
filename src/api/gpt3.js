@@ -49,7 +49,7 @@ const generateCaption = async (req, res) => {
         } = req.body;
 
         // VALIDATION
-        if (!prompt) throw new APIError('Prompt was not given!', 400);
+        if (!prompt) throw new APIError('Prompt was not given!', 400, 'Bad Request');
         // TODO: user auth
         // if (!meta_user) throw new APIError('User not identified!', 403);
         const {
