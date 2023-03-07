@@ -11,7 +11,8 @@ const APIError = class CustomAPIError {
 };
 
 const handleGPTError = (err) => {
-    const source = `GPT: (${err.request.method}) ${err.response.statusText}`;
+    const srcText = err.isAxiosError ? `AXIOS ERROR (${err.response.statusText})` : err.response.statusText;
+    const source = `GPT: (${err.request.method}) ${srcText}`;
     const statusCode = err.response.status;
     const message = process.env.NODE_ENV === 'production'
         ? 'An error occured while interacting with GPT-3'
