@@ -14,7 +14,7 @@ class Instagram {
      * @returns {Promise<Instagram>} A promise of an initialized instance of this class
      */
     constructor(username, password) {
-        this.client = new IgApiClient();
+        this.client = new IgApiClient();    // TODO: make client private
         this.client.state.generateDevice(username);
 
         return new Promise(async (resolve) => {

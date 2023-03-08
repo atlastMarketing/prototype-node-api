@@ -1,9 +1,16 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 
 require('dotenv').config();
+
+const dbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@atlast.uuup77b.mongodb.net/?retryWrites=true&w=majority`;
+
+mongoose.connect(dbURI)
+    .then((result) => console.log("Connected to Atlast database!"))
+    .catch((err) => console.log(err));
 
 const middlewares = require('./middlewares');
 const api = require('./api');
