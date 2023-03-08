@@ -1,6 +1,6 @@
 const express = require('express');
 
-const emojis = require('./emojis');
+const gpt3 = require('./gpt3');
 const Instagram = require('./instagram');
 
 require('dotenv').config();
@@ -8,9 +8,9 @@ require('dotenv').config();
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.json({
-    message: 'API - 👋🌎🌍🌏',
-  });
+    res.json({
+        message: 'API v1 - healthy',
+    });
 });
 
 router.post('/', async (req, res) => {
@@ -32,6 +32,6 @@ router.post('/', async (req, res) => {
   /* eslint-enable no-console */
 });
 
-router.use('/emojis', emojis);
+router.use('/ml', gpt3);
 
 module.exports = router;
