@@ -21,15 +21,12 @@ router.post('/', async (req, res) => {
   console.log(content);
   console.log("Posting...");
 
-  const imageUrl = content.imageUrl;
-  const caption = content.caption;
-
   const instagram = await new Instagram(
     process.env.INSTAGRAM_USERNAME,
     process.env.INSTAGRAM_PASSWORD
   );
 
-  await instagram.post(imageUrl, caption);
+  await instagram.post(content.imageUrl, content.caption);
 
   console.log("Post successful!");
   /* eslint-enable no-console */
