@@ -42,10 +42,10 @@ const generateCaption = async (req, res) => {
     try {
         const {
             prompt,
-            prompt_info = {},
-            meta_user = {},
-            meta_business = {},
-            meta_prompt = {},
+            prompt_info: promptInfo = {},
+            meta_user: metaUser = {},
+            meta_business: metaBusiness = {},
+            meta_prompt: metaPrompt = {},
         } = req.body;
 
         // VALIDATION
@@ -54,26 +54,26 @@ const generateCaption = async (req, res) => {
         // if (!meta_user) throw new APIError('User not identified!', 403);
         const {
             user_id: userId = 'UNKNOWN_USER',
-        } = meta_user;
+        } = metaUser;
 
         // FUNCTIONALITY
         const engineeredPrompt = engineerPrompt({
             prompt,
-            voice: prompt_info.voice,
-            platform: prompt_info.platform,
-            businessDescription: meta_business.business_description,
-            businessLocation: meta_business.business_location,
+            voice: promptInfo.voice,
+            platform: promptInfo.platform,
+            businessDescription: metaBusiness.business_description,
+            businessLocation: metaBusiness.business_location,
         });
 
         // completion options
 
         const temperature = calculateTemperature({
-            generationNum: meta_prompt.generation_num,
+            generationNum: metaPrompt.generation_num,
         });
 
         const completionOptions = {
             temperature,
-            numOptions: prompt_info.num_options,
+            numOptions: promptInfo.num_options,
             userId,
             // TODO: use platform to get maximum number of tokens
             maxTokens: MAX_TOKENS_DEFAULT,
