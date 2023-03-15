@@ -12,20 +12,22 @@ router.post('/', async (req, res) => {
     console.log(profile);
     console.log("Saving...");
 
-    await userProfileManager.saveProfile(profile);
+    const id = await userProfileManager.saveProfile(profile);
 
     console.log("User Profile was saved successful!");
     /* eslint-enable no-console */
+
+    res.json(id);
 });
 
 router.get('/', async (req, res) => {
-    const username = req.body.username;
+    const id = req.body.id;
 
     /* eslint-disable no-console */
-    console.log(`Received profile get request for: ${username}`);
+    console.log(`Received profile get request for: ${id}`);
     console.log("Getting...");
 
-    const profile = await userProfileManager.findProfile(username);
+    const profile = await userProfileManager.findProfile(id);
 
     console.log("User Profile was retrieved successful!");
     console.log(profile);
@@ -35,33 +37,35 @@ router.get('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-    const username = req.body.username;
+    const id = req.body.id;
     const update = req.body.update;
 
     /* eslint-disable no-console */
-    console.log(`Received profile update request for: ${username}`);
+    console.log(`Received profile update request for: ${id}`);
     console.log(update);
     console.log("Updating...");
 
-    await userProfileManager.updateProfile(username, update);
+    await userProfileManager.updateProfile(id, update);
 
     console.log("User Profile was updated successful!");
     /* eslint-enable no-console */
+
+    res.end();
 });
 
 router.delete('/', async (req, res) => {
-    const username = req.body.username;
+    const id = req.body.id;
 
     /* eslint-disable no-console */
-    console.log(`Received profile delete request for: ${username}`);
+    console.log(`Received profile delete request for: ${id}`);
     console.log("Deleting...");
 
-    await userProfileManager.deleteProfile(username);
+    await userProfileManager.deleteProfile(id);
 
-    console.log("User Profile was delete successful!");
+    console.log("User Profile was deleted successful!");
     /* eslint-enable no-console */
-});
 
-router.use('/m1', userProfileManager);  // TODO: correct?
+    res.end();
+});
 
 module.exports = router;

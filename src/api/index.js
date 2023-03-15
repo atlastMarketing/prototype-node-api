@@ -2,15 +2,16 @@ const express = require('express');
 
 const gpt3 = require('./gpt3');
 const Instagram = require('./instagram');
+const userProfileManager = require('./user-profile-manager');
 
 require('dotenv').config();
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.json({
-        message: 'API v1 - healthy',
-    });
+  res.json({
+    message: 'API v1 - healthy',
+  });
 });
 
 router.post('/', async (req, res) => {
@@ -33,5 +34,6 @@ router.post('/', async (req, res) => {
 });
 
 router.use('/ml', gpt3);
+router.use('/user-profile-manager', userProfileManager);
 
 module.exports = router;
