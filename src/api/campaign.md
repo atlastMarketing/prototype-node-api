@@ -3,7 +3,7 @@ Creation of campaigns
 
 ## Available Endpoints
 
-### Generate Caption (`GET /campaign/regular`)
+### Generate Caption (`POST /campaign/regular`)
 Generates a regular repetitive campaign for a specific platform and according to specific prompts and settings
 
 **JSON request body is required**.
@@ -43,7 +43,7 @@ Generates a regular repetitive campaign for a specific platform and according to
 ```
 
 
-### Generate Caption (`GET /campaign/irregular`)
+### Generate Caption (`POST /campaign/irregular`)
 Generates an irregular campaign for a specific platform and according to specific prompts and settings
 
 **JSON request body is required**.

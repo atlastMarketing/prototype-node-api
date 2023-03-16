@@ -107,6 +107,6 @@ const generateIrregularCampaign = async (req, res) => {
     }
 };
 
-router.get('/regular', generateRegularCampaign);
-router.get('/irregular', generateIrregularCampaign);
+router.post('/regular', generateRegularCampaign);
+router.post('/irregular', generateIrregularCampaign);
 module.exports = router;
