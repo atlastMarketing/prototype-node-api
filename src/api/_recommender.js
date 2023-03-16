@@ -113,6 +113,8 @@ const dateRecommenderEvent = (medium, dateInfo) => {
 
         if (startDate) {
             difference = new Date(endDate).getTime() - new Date(startDate).getTime();
+        } else {
+            difference = new Date(endDate).getTime() - new Date().getTime();
         }
         const daysBetween = Math.ceil(difference / (1000 * 3600 * 24));
 

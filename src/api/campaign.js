@@ -40,6 +40,9 @@ const generateRegularCampaign = async (req, res) => {
         // const {
         //     user_id: userId = 'UNKNOWN_USER',
         // } = metaUser;
+        if (!Object.values(REGULAR_CAMPAIGN_TYPES_ENUM).includes(campaignType)) {
+            throw new APIError('Campaign type was not recognized!', 400, 'Bad Request');
+        }
         if (!startDate) {
             throw new APIError('Start date was not given for regular campaign!', 400, 'Bad Request');
         }
@@ -88,6 +91,9 @@ const generateIrregularCampaign = async (req, res) => {
         // const {
         //     user_id: userId = 'UNKNOWN_USER',
         // } = metaUser;
+        if (!Object.values(IRREGULAR_CAMPAIGN_TYPES_ENUM).includes(campaignType)) {
+            throw new APIError('Campaign type was not recognized!', 400, 'Bad Request');
+        }
         if (campaignType === IRREGULAR_CAMPAIGN_TYPES_ENUM.EVENT && !endDate) {
             throw new APIError('End date was not given for irregular campaign!', 400, 'Bad Request');
         }
