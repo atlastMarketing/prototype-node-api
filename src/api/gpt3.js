@@ -104,5 +104,5 @@ const generateCaption = async (req, res) => {
     }
 };
 
-router.get('/caption', generateCaption);
+router.post('/caption', generateCaption);
 module.exports = router;

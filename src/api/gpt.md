@@ -5,7 +5,7 @@ Connections to GPT, including:
 
 ## Available Endpoints
 
-### Generate Caption (`GET /ml/caption`)
+### Generate Caption (`POST /ml/caption`)
 Generates a caption for a specific platform, and according to a specific prompt
 
 **JSON request body is required**.
