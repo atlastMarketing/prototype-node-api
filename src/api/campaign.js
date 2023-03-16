@@ -16,11 +16,6 @@ const DEFAULT_IRRREGULAR_CAMPAIGN_TYPE = REGULAR_CAMPAIGN_TYPES_ENUM.EVENT;
 
 const generateRegularCampaign = async (req, res) => {
     try {
-        // expected requests:
-        // - regular repeated campaign with a start and end date -- weekly, monthly
-        // - regular repeated campaign with a start date -- weekly, monthly
-        // - regular repeated campaign with an end date -- weekly, monthly
-        // - regular repeated camapgin with no start or end date -- weekly, monthly
         const {
             prompt,
             prompt_info: promptInfo = {},
@@ -70,8 +65,6 @@ const generateRegularCampaign = async (req, res) => {
 
 const generateIrregularCampaign = async (req, res) => {
     try {
-        // expected requests:
-        // - event campaign approaching a certain date
         const {
             prompt,
             prompt_info: promptInfo = {},
