@@ -20,7 +20,7 @@ Generates a caption for a specific platform, and according to a specific prompt
 #### Sample JSON Request Body (Complete Attributes):
 ```
 {
-    "prompt": "Create a caption for an instagram post for valentines day promoting acne medicine",
+    "prompt": "Valentines day acne medicine promotion",
     "prompt_info": {
         "voice": "professional",
         "platform": "Instagram"
@@ -37,7 +37,8 @@ Generates a caption for a specific platform, and according to a specific prompt
         "business_voice": "professional"
     },
     "meta_prompt": {
-        "generation_num": 1
+        "generation_num": 1,
+        "full_catalyst": "original and unedited prompt entered by user"
     }
 }
 ```
