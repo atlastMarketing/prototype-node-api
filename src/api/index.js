@@ -1,5 +1,6 @@
 const express = require('express');
 
+const campaign = require('./campaign');
 const gpt3 = require('./gpt3');
 const Instagram = require('./instagram');
 
@@ -33,5 +34,6 @@ router.post('/', async (req, res) => {
 });
 
 router.use('/ml', gpt3);
+router.use('/campaign', campaign);
 
 module.exports = router;
