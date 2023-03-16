@@ -29,6 +29,9 @@ Generates a caption for a specific platform, and according to a specific prompt
         "user_id": 1234567890
     },
     "meta_business": {
+        "business_name": "JAMPACK"
+        "business_type": "Physical Products"
+        "business_industry": "Professional, Scientific and Technical Services"
         "business_description": "Local skincare shop that imports specialty skincare from Japan and Korea, for both men and women.",
         "business_location": "Vancouver, BC, Canada",
         "business_voice": "professional"
