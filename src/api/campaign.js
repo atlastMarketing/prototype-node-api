@@ -22,6 +22,7 @@ const generateRegularCampaign = async (req, res) => {
             campaign_type: campaignType = DEFAULT_REGULAR_CAMPAIGN_TYPE,
             start_date: startDate,
             end_date: endDate,
+            timezone,
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
             // meta_business: metaBusiness = {},
@@ -48,11 +49,13 @@ const generateRegularCampaign = async (req, res) => {
             campaignData = dateRecommenderMonthly(promptInfo.platform, {
                 startDate,
                 endDate,
+                timezone,
             });
         } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_WEEKLY) {
             campaignData = dateRecommenderWeekly(promptInfo.platform, {
                 startDate,
                 endDate,
+                timezone,
             });
         }
 
@@ -71,6 +74,7 @@ const generateIrregularCampaign = async (req, res) => {
             campaign_type: campaignType = DEFAULT_IRRREGULAR_CAMPAIGN_TYPE,
             start_date: startDate,
             end_date: endDate,
+            timezone,
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
             // meta_business: metaBusiness = {},
@@ -97,6 +101,7 @@ const generateIrregularCampaign = async (req, res) => {
             {
                 startDate,
                 endDate,
+                timezone,
             },
         );
 

@@ -12,7 +12,8 @@ Generates a regular repetitive campaign for a specific platform and according to
 ```
 {
     "prompt": "Create a caption for an instagram post for valentines day promoting acne medicine",
-    "start_date": "2023-03-01T00:00:00.380Z",
+    "start_date": "1680307200380",
+    "timezone": "America/Vancouver"
 }
 ```
 
@@ -25,8 +26,9 @@ Generates a regular repetitive campaign for a specific platform and according to
         "platform": "Instagram"
     },
     "campaign_type": "REGULAR_REPEATED_WEEKLY",
-    "start_date": "2023-03-01T00:00:00.380Z",
-    "end_date": "2023-05-01T00:00:00.380Z",
+    "start_date": 1680307200380,
+    "end_date": 1685577600380,
+    "timezone": "America/Vancouver",
     "meta_user": {
         "user_id": 1234567890
     },
@@ -37,7 +39,6 @@ Generates a regular repetitive campaign for a specific platform and according to
     },
     "meta_prompt": {
         "generation_num": 1,
-        "timezone": "America/Vancouver"
     }
 }
 ```
@@ -52,7 +53,7 @@ Generates an irregular campaign for a specific platform and according to specifi
 ```
 {
     "prompt": "Create a caption for an instagram post for valentines day promoting acne medicine",
-    "end_date": "2023-03-01T00:00:00.380Z",
+    "end_date": "1680307200380",
 }
 ```
 
@@ -65,8 +66,9 @@ Generates an irregular campaign for a specific platform and according to specifi
         "platform": "Instagram"
     },
     "campaign_type": "EVENT",
-    "start_date": "2023-03-01T00:00:00.380Z",
-    "end_date": "2023-05-01T00:00:00.380Z",
+    "start_date": 1680307200380,
+    "end_date": 1685577600380,
+    "timezone": "America/Vancouver",
     "meta_user": {
         "user_id": 1234567890
     },
@@ -76,8 +78,7 @@ Generates an irregular campaign for a specific platform and according to specifi
         "business_voice": "professional"
     },
     "meta_prompt": {
-        "generation_num": 1,
-        "timezone": "America/Vancouver"
+        "generation_num": 1
     }
 }
 ```

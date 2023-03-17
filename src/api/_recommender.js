@@ -1,11 +1,12 @@
+const { DateTime } = require('luxon');
 const { APIError } = require('../_error');
 
+const DEFAULT_TIMEZONE = 'America/Vancouver';
+
 const timeRecommender = (
-    date,
+    day,
     // medium,
 ) => {
-    const day = new Date(date).getDay();
-
     // TODO: differentiate by medium
     // https://sproutsocial.com/insights/best-times-to-post-on-social-media/
     // also need to get correct values
@@ -50,26 +51,32 @@ const dateRecommenderMonthly = (medium, dateInfo) => {
         const {
             startDate,
             endDate = null,
+            timezone = DEFAULT_TIMEZONE,
         } = dateInfo;
 
         const campaignList = [];
-        const endTime = endDate ? new Date(endDate).getTime() : null;
+        const startTime = DateTime.fromMillis(startDate).setZone(timezone);
+        const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
         for (let i = 0; i < CAMPAIGN_DEFAULTS_REGULAR__MONTHLY.length; i += 1) {
             const monthInterval = CAMPAIGN_DEFAULTS_REGULAR__MONTHLY[i];
 
-            const currDate = new Date(startDate);
-            currDate.setMonth(currDate.getMonth() + monthInterval);
-            const [timeHour, timeMin] = timeRecommender(currDate, medium);
-            currDate.setHours(timeHour, timeMin, 0);
-            if (endTime && currDate.getTime() > endTime) break;
+            let currDate = startTime.plus({ months: monthInterval });
+            const [timeHour, timeMin] = timeRecommender(currDate.day, timezone, medium);
+            currDate = currDate.set({
+                hour: timeHour,
+                minute: timeMin,
+                second: 0,
+                millisecond: 0,
+            });
+            if (endTime && currDate > endTime) break;
 
-            campaignList.push(currDate.toISOString());
+            campaignList.push(currDate.toMillis());
         }
 
         return campaignList;
     } catch (err) {
-        throw APIError('Failed to create monthly campaign', 500);
+        throw new APIError('Failed to create monthly campaign', 500);
     }
 };
 
@@ -78,26 +85,32 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
         const {
             startDate,
             endDate = null,
+            timezone = DEFAULT_TIMEZONE,
         } = dateInfo;
 
         const campaignList = [];
-        const endTime = endDate ? new Date(endDate).getTime() : null;
+        const startTime = DateTime.fromMillis(startDate).setZone(timezone);
+        const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
         for (let i = 0; i < CAMPAIGN_DEFAULTS_REGULAR__WEEKLY.length; i += 1) {
             const dayInterval = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY[i];
 
-            const currDate = new Date(startDate);
-            currDate.setDate(currDate.getDate() + dayInterval);
-            const [timeHour, timeMin] = timeRecommender(currDate, medium);
-            currDate.setHours(timeHour, timeMin, 0);
-            if (endTime && currDate.getTime() > endTime) break;
+            let currDate = startTime.plus({ days: dayInterval });
+            const [timeHour, timeMin] = timeRecommender(currDate, timezone, medium);
+            currDate = currDate.set({
+                hour: timeHour,
+                minute: timeMin,
+                second: 0,
+                millisecond: 0,
+            });
+            if (endTime && currDate > endTime) break;
 
-            campaignList.push(currDate.toISOString());
+            campaignList.push(currDate.toMillis());
         }
 
         return campaignList;
     } catch (err) {
-        throw APIError('Failed to create weekly campaign', 500);
+        throw new APIError('Failed to create weekly campaign', 500);
     }
 };
 
@@ -106,32 +119,41 @@ const dateRecommenderEvent = (medium, dateInfo) => {
         const {
             startDate = null,
             endDate,
+            timezone = DEFAULT_TIMEZONE,
         } = dateInfo;
 
+        const endTime = DateTime.fromMillis(endDate).setZone(timezone);
+
         const campaignList = [];
-        let difference = 0;
+        let daysBetween = 0;
 
         if (startDate) {
-            difference = new Date(endDate).getTime() - new Date(startDate).getTime();
+            const startTime = DateTime.fromMillis(startDate).setZone(timezone);
+            if (endTime < startTime) return campaignList;
+
+            daysBetween = endTime.diff(startTime, 'day');
         } else {
-            difference = new Date(endDate).getTime() - new Date().getTime();
+            daysBetween = endTime.diffNow('day');
         }
-        const daysBetween = Math.ceil(difference / (1000 * 3600 * 24));
 
         for (let i = 0; i < CAMPAIGN_DEFAULTS_IRREGULAR__EVENT.length; i += 1) {
             const daysUntil = CAMPAIGN_DEFAULTS_IRREGULAR__EVENT[i];
             if (daysBetween != null && daysUntil > daysBetween) break;
 
-            const currDate = new Date(endDate);
-            currDate.setDate(currDate.getDate() - daysUntil);
-            const [timeHour, timeMin] = timeRecommender(currDate, medium);
-            currDate.setHours(timeHour, timeMin, 0);
-            campaignList.push(currDate.toISOString());
+            let currDate = endTime.minus({ days: daysUntil });
+            const [timeHour, timeMin] = timeRecommender(currDate, timezone, medium);
+            currDate = currDate.set({
+                hour: timeHour,
+                minute: timeMin,
+                second: 0,
+                millisecond: 0,
+            });
+            campaignList.push(currDate.toMillis());
         }
 
         return campaignList;
     } catch (err) {
-        throw APIError('Failed to create event campaign', 500);
+        throw new APIError('Failed to create event campaign', 500);
     }
 };
 
