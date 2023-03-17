@@ -5,7 +5,7 @@ Connections to GPT, including:
 
 ## Available Endpoints
 
-### Generate Caption (`GET /ml/caption`)
+### Generate Caption (`POST /ml/caption`)
 Generates a caption for a specific platform, and according to a specific prompt
 
 **JSON request body is required**.
@@ -20,7 +20,7 @@ Generates a caption for a specific platform, and according to a specific prompt
 #### Sample JSON Request Body (Complete Attributes):
 ```
 {
-    "prompt": "Create a caption for an instagram post for valentines day promoting acne medicine",
+    "prompt": "Valentines day acne medicine promotion",
     "prompt_info": {
         "voice": "professional",
         "platform": "Instagram"
@@ -29,12 +29,16 @@ Generates a caption for a specific platform, and according to a specific prompt
         "user_id": 1234567890
     },
     "meta_business": {
+        "business_name": "JAMPACK"
+        "business_type": "Physical Products"
+        "business_industry": "Professional, Scientific and Technical Services"
         "business_description": "Local skincare shop that imports specialty skincare from Japan and Korea, for both men and women.",
         "business_location": "Vancouver, BC, Canada",
         "business_voice": "professional"
     },
     "meta_prompt": {
-        "generation_num": 1
+        "generation_num": 1,
+        "full_catalyst": "original and unedited prompt entered by user"
     }
 }
 ```
