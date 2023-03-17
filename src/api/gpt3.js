@@ -70,6 +70,7 @@ const generateCaption = async (req, res) => {
         const temperature = calculateTemperature({
             generationNum: meta_prompt.generation_num,
         });
+        console.debug(`Generation number ${meta_prompt.generation_num}, used temperature val: ${temperature}`);
 
         const completionOptions = {
             temperature,
@@ -95,7 +96,7 @@ const generateCaption = async (req, res) => {
         } = completionData;
         const token_usage = usage.total_tokens;
         // TODO: save token usage for the given user
-        console.log(`User "${userId}" used up ${token_usage} tokens for the following completion task:\n${JSON.stringify(completionTask, null, 2)}`);
+        console.debug(`User "${userId}" used up ${token_usage} tokens for the following completion task:\n${JSON.stringify(completionTask, null, 2)}`);
 
         // RETURN
         res.status(200).json(completionData);
