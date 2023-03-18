@@ -12,17 +12,21 @@ router.post('/', async (req, res) => {
     console.log(body);
     console.log("Posting...");
 
-    const id = body['_id'];
-    const instagram = await new Instagram(id);
+    try {
+        const id = body['_id'];
+        const instagram = await new Instagram(id);
 
-    const imageUrl = body['image_url'];
-    const caption = body['caption'];
-    await instagram.post(imageUrl, caption);
+        const imageUrl = body['image_url'];
+        const caption = body['caption'];
+        await instagram.post(imageUrl, caption);
 
-    console.log("Post successful!");
+        console.log("Post successful!");
+        res.status(200);
+    } catch (err) {
+        console.log("Post failed!");
+        res.status(err.status || 400).json(err);
+    }
     /* eslint-enable no-console */
-
-    res.end();
 });
 
 module.exports = router;

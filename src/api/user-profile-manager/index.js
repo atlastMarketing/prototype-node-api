@@ -12,12 +12,16 @@ router.post('/', async (req, res) => {
     console.log(profile);
     console.log("Saving...");
 
-    const id = await userProfileManager.saveProfile(profile);
+    try {
+        const id = await userProfileManager.saveProfile(profile);
 
-    console.log("User Profile was saved successful!");
+        console.log("User Profile was saved successfully!");
+        res.status(200).json(id);
+    } catch (err) {
+        console.log("User Profile failed to save!");
+        res.status(err.status || 400).json(err);
+    }
     /* eslint-enable no-console */
-
-    res.json(id);
 });
 
 router.get('/', async (req, res) => {
@@ -27,13 +31,17 @@ router.get('/', async (req, res) => {
     console.log(`Received profile get request for: ${id}`);
     console.log("Getting...");
 
-    const profile = await userProfileManager.findProfile(id);
+    try {
+        const profile = await userProfileManager.findProfile(id);
 
-    console.log("User Profile was retrieved successful!");
-    console.log(profile);
+        console.log("User Profile was retrieved successfully!");
+        console.log(profile);
+        res.status(200).json(profile);
+    } catch (err) {
+        console.log("User Profile was not retrieved!");
+        res.status(err.status || 400).json(err);
+    }
     /* eslint-enable no-console */
-
-    res.json(profile);
 });
 
 router.put('/', async (req, res) => {
@@ -45,12 +53,16 @@ router.put('/', async (req, res) => {
     console.log(update);
     console.log("Updating...");
 
-    await userProfileManager.updateProfile(id, update);
+    try {
+        await userProfileManager.updateProfile(id, update);
 
-    console.log("User Profile was updated successful!");
+        console.log("User Profile was updated successful!");
+        res.status(200);
+    } catch (err) {
+        console.log("User Profile failed to update!");
+        res.status(err.status || 400).json(err);
+    }
     /* eslint-enable no-console */
-
-    res.end();
 });
 
 router.delete('/', async (req, res) => {
@@ -60,12 +72,16 @@ router.delete('/', async (req, res) => {
     console.log(`Received profile delete request for: ${id}`);
     console.log("Deleting...");
 
-    await userProfileManager.deleteProfile(id);
+    try {
+        await userProfileManager.deleteProfile(id);
 
-    console.log("User Profile was deleted successful!");
+        console.log("User Profile was deleted successful!");
+        res.status(200);
+    } catch (err) {
+        console.log("User Profile failed to be delete!");
+        res.status(err.status || 400).json(err);
+    }
     /* eslint-enable no-console */
-
-    res.end();
 });
 
 module.exports = router;
