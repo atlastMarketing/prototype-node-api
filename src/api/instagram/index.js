@@ -5,22 +5,24 @@ require('dotenv').config();
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const content = req.body;
+    const body = req.body;
 
     /* eslint-disable no-console */
     console.log("Received post request:");
-    console.log(content);
+    console.log(body);
     console.log("Posting...");
 
-    const instagram = await new Instagram(
-        process.env.INSTAGRAM_USERNAME,
-        process.env.INSTAGRAM_PASSWORD
-    );
+    const id = body['_id'];
+    const instagram = await new Instagram(id);
 
-    await instagram.post(content.imageUrl, content.caption);
+    const imageUrl = body['image_url'];
+    const caption = body['caption'];
+    await instagram.post(imageUrl, caption);
 
     console.log("Post successful!");
     /* eslint-enable no-console */
+
+    res.end();
 });
 
 module.exports = router;
