@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const GeoJSON = require('geojson');
 const Schema = mongoose.Schema;
 
 const userProfileSchema = new Schema({
@@ -19,6 +20,18 @@ const userProfileSchema = new Schema({
         required: false
     },
     business_industry: {
+        type: String,
+        required: false
+    },
+    business_description: {
+        type: String,
+        required: false
+    },
+    business_location: {
+        type: GeoJSON,
+        required: true
+    },
+    business_voice: {
         type: String,
         required: false
     }
