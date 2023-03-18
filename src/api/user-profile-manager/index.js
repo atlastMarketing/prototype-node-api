@@ -78,7 +78,7 @@ router.delete('/', async (req, res) => {
         console.log("User Profile was deleted successful!");
         res.status(200);
     } catch (err) {
-        console.log("User Profile failed to delete!");
+        console.log("User Profile failed to be delete!");
         res.status(err.status || 400).json(err);
     }
     /* eslint-enable no-console */
