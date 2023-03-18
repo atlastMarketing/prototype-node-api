@@ -6,7 +6,7 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-const dbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@atlast.uuup77b.mongodb.net/?retryWrites=true&w=majority`;
+const dbURI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@atlastcluster.fftquql.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.connect(dbURI)
     .then((result) => console.log("Connected to Atlast database!"))
