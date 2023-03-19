@@ -1,5 +1,5 @@
 const { DateTime } = require('luxon');
-const { APIError } = require('../_error');
+const { APIError } = require('../../_error');
 
 const DEFAULT_TIMEZONE = 'America/Vancouver';
 

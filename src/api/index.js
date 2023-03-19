@@ -1,7 +1,7 @@
 const express = require('express');
 
 const campaign = require('./campaign');
-const gpt3 = require('./gpt3');
+const gpt3 = require('./gpt/gpt3');
 const instagram = require('./instagram');
 const userProfileManager = require('./user-profile-manager');
 

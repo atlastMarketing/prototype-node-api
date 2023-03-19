@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const { APIError } = require('../_error');
-const { REGULAR_CAMPAIGN_TYPES_ENUM, IRREGULAR_CAMPAIGN_TYPES_ENUM } = require('../constants/enum');
+const { APIError } = require('../../_error');
+const { REGULAR_CAMPAIGN_TYPES_ENUM, IRREGULAR_CAMPAIGN_TYPES_ENUM } = require('../../constants/enum');
 const {
     dateRecommenderWeekly,
     dateRecommenderMonthly,

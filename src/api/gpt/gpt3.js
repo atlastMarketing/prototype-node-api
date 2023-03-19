@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require('openai');
 const router = require('express').Router();
 
-const { handleGPTError, APIError } = require('../_error');
+const { handleGPTError, APIError } = require('../../_error');
 const { engineerPrompt, calculateTemperature } = require('./_prompt');
 
 require('dotenv').config();
@@ -70,7 +70,7 @@ const generateCaption = async (req, res) => {
         const temperature = calculateTemperature({
             generationNum: metaPrompt.generation_num,
         });
-        console.debug(`Generation number ${meta_prompt.generation_num}, used temperature val: ${temperature}`);
+        console.debug(`Generation number ${metaPrompt.generation_num}, used temperature val: ${temperature}`);
 
         const completionOptions = {
             temperature,
