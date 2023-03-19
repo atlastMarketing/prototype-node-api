@@ -32,7 +32,7 @@ const engineerPrompt = ({
     return finalPrompt;
 };
 
-const MAX_TEMPERATURE = 0.6;
+const MAX_TEMPERATURE = 1;
 const MIN_TEMPERATURE = 0.3;
 
 const calculateTemperature = ({
