@@ -7,6 +7,10 @@ const userProfileSchema = new Schema({
         type: String,
         required: true
     },
+    password: {  // TODO: password isn't even in the database
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true
