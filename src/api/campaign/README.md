@@ -39,6 +39,7 @@ Generates a regular repetitive campaign for a specific platform and according to
     },
     "meta_prompt": {
         "generation_num": 1,
+        "full_catalyst": "original and unedited prompt entered by user"
     }
 }
 ```
@@ -78,7 +79,8 @@ Generates an irregular campaign for a specific platform and according to specifi
         "business_voice": "professional"
     },
     "meta_prompt": {
-        "generation_num": 1
+        "generation_num": 1,
+        "full_catalyst": "original and unedited prompt entered by user"
     }
 }
 ```
