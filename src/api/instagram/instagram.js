@@ -1,7 +1,6 @@
 const { IgApiClient } = require('instagram-private-api');
 const { get } = require('request-promise');
 const userProfileManager = require('../user-profile-manager/user-profile-manager');
-const gpt3 = require('../gpt3');
 
 
 /**
