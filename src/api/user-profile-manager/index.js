@@ -1,87 +1,79 @@
 const express = require('express');
 const userProfileManager = require('./user-profile-manager');
 require('dotenv').config();
+/* eslint no-console: 0 */
 
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const profile = req.body;
+    const { body } = req;
 
-    /* eslint-disable no-console */
-    console.log("Received profile save request:");
-    console.log(profile);
-    console.log("Saving...");
+    console.log('Received profile save request:');
+    console.log(body);
+    console.log('Saving...');
 
     try {
-        const id = await userProfileManager.saveProfile(profile);
+        const id = await userProfileManager.saveProfile(body);
 
-        console.log("User Profile was saved successfully!");
-        res.status(200).json(id);
+        console.log('User Profile was saved successfully!');
+        res.status(201).json(id);
     } catch (err) {
-        console.log("User Profile failed to save!");
+        console.log('User Profile failed to save!');
         res.status(err.status || 400).json(err);
     }
-    /* eslint-enable no-console */
 });
 
-router.get('/', async (req, res) => {
-    const id = req.body.id;
+router.get('/:userId', async (req, res) => {
+    const { userId } = req.params;
 
-    /* eslint-disable no-console */
-    console.log(`Received profile get request for: ${id}`);
-    console.log("Getting...");
+    console.log(`Received profile get request for: ${userId}`);
 
     try {
-        const profile = await userProfileManager.findProfile(id);
+        const profile = await userProfileManager.findProfile(userId, 10);
 
-        console.log("User Profile was retrieved successfully!");
+        console.log('User Profile was retrieved successfully!');
         console.log(profile);
         res.status(200).json(profile);
     } catch (err) {
-        console.log("User Profile was not retrieved!");
-        res.status(err.status || 400).json(err);
+        console.log('User Profile could not be found!');
+        res.status(err.status || 404).json(err);
     }
-    /* eslint-enable no-console */
 });
 
-router.put('/', async (req, res) => {
-    const id = req.body.id;
-    const update = req.body.update;
+router.put('/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { body } = req;
 
-    /* eslint-disable no-console */
-    console.log(`Received profile update request for: ${id}`);
-    console.log(update);
-    console.log("Updating...");
+    console.log(`Received profile update request for: ${userId}`);
+    console.log(body);
+    console.log('Updating...');
 
     try {
-        await userProfileManager.updateProfile(id, update);
+        await userProfileManager.updateProfile(userId, body);
 
-        console.log("User Profile was updated successful!");
-        res.status(200);
+        console.log('User Profile was updated successful!');
+        res.status(204);
     } catch (err) {
-        console.log("User Profile failed to update!");
+        console.log('User Profile failed to update!');
         res.status(err.status || 400).json(err);
     }
-    /* eslint-enable no-console */
 });
 
-router.delete('/', async (req, res) => {
-    const id = req.body.id;
+router.delete('/:userId', async (req, res) => {
+    const { userId } = req.params;
 
-    /* eslint-disable no-console */
-    console.log(`Received profile delete request for: ${id}`);
-    console.log("Deleting...");
+    console.log(`Received profile delete request for: ${userId}`);
+    console.log('Deleting...');
 
     try {
-        await userProfileManager.deleteProfile(id);
+        await userProfileManager.deleteProfile(userId);
 
-        console.log("User Profile was deleted successful!");
-        res.status(200);
+        console.log('User Profile was deleted successful!');
+        res.status(204);
     } catch (err) {
-        console.log("User Profile failed to be delete!");
+        console.log('User Profile failed to be deleted!');
         res.status(err.status || 400).json(err);
     }
-    /* eslint-enable no-console */
 });
 
 module.exports = router;
