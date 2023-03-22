@@ -54,13 +54,17 @@ const dateRecommenderMonthly = (medium, dateInfo) => {
             startDate,
             endDate = null,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const campaignList = [];
         const startTime = DateTime.fromMillis(startDate).setZone(timezone);
         const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
-        for (let i = 0; i < CAMPAIGN_DEFAULTS_REGULAR__MONTHLY.length; i += 1) {
+        let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__MONTHLY.length;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        for (let i = 0; i < totalPosts; i += 1) {
             const monthInterval = CAMPAIGN_DEFAULTS_REGULAR__MONTHLY[i];
 
             let currDate = startTime.plus({ months: monthInterval });
@@ -88,13 +92,17 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
             startDate,
             endDate = null,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const campaignList = [];
         const startTime = DateTime.fromMillis(startDate).setZone(timezone);
         const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
-        for (let i = 0; i < CAMPAIGN_DEFAULTS_REGULAR__WEEKLY.length; i += 1) {
+        let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY.length;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        for (let i = 0; i < totalPosts; i += 1) {
             const dayInterval = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY[i];
 
             let currDate = startTime.plus({ days: dayInterval });
@@ -122,19 +130,21 @@ const dateRecommenderDaily = (medium, dateInfo) => {
             startDate,
             endDate = null,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const campaignList = [];
         const startTime = DateTime.fromMillis(startDate).setZone(timezone);
         const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
-        let totalDays = CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX;
+        let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
 
         if (endTime) {
-            totalDays = Math.min(endTime.diff(startTime, ['days']).days, CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX);
+            totalPosts = Math.min(endTime.diff(startTime, ['days']).days, totalPosts);
         }
 
-        for (let i = 0; i < totalDays; i += 1) {
+        for (let i = 0; i < totalPosts; i += 1) {
             let currDate = startTime.plus({ days: i });
             const [timeHour, timeMin] = timeRecommender(currDate.day, timezone, medium);
             currDate = currDate.set({
