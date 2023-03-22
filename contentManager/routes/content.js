@@ -22,6 +22,27 @@ router.get('/user/:userId', async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   });
+
+// PUT update content by contentId
+router.put('/:contentId', async (req, res) => {
+  try {
+    const content = await Content.findOneAndUpdate(
+      { contentId: req.params.contentId },
+      { 
+        userId: req.body.userId,
+        socialMedia: req.body.socialMedia,
+        image_url: req.body.image_url,
+        caption: req.body.caption,
+        postDate: req.body.postDate,
+        isDraft: req.body.isDraft
+      },
+      { new: true }
+    );
+    res.json(content);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
   
 // GET content by contentId
 router.get('/:contentId', async (req, res) => {
@@ -38,6 +59,7 @@ router.post('/', async (req, res) => {
   const content = new Content({
     userId: req.body.userId,
     contentId: req.body.contentId,
+    socialMedia: req.body.socialMedia,
     image_url: req.body.image_url,
     caption: req.body.caption,
     postDate: req.body.postDate,
