@@ -24,8 +24,7 @@ async function saveProfile(profile) {
  * @throws error if the profile was unable to be acquired
  */
 async function findProfile(id) {
-    const objectId = mongoose.Types.ObjectId(id);
-    return UserProfile.findById(objectId);
+    return UserProfile.findOne({ _id: id });
 }
 
 /**
