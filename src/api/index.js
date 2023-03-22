@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 
 router.use('/ml', gpt3);
 router.use('/campaign', campaign);
-router.use('/user-profile-manager', userProfileManager);
+router.use('/user', userProfileManager);
 router.use('/instagram', instagram);
 
 module.exports = router;
