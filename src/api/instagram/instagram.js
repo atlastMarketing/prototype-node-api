@@ -10,17 +10,14 @@ class Instagram {
     /**
      * Initializes the class
      * 
-     * @param {string} id The id of the user profile containing the instagram account to login to
+     * @param {string} username The username of the user profile containing the instagram account to login to
+     * @param {string} password The password of the user profile containing the instagram account to login to
      * @returns {Promise<Instagram>} A promise of an initialized instance of this class
      */
-    constructor(id) {
+    constructor(username, password) {
         this.client = new IgApiClient();    // TODO: make client private
 
         return new Promise(async (resolve) => {
-            const userProfile = await userProfileManager.findProfile(id);
-            const username = userProfile.username;  // TODO: these should be replaced with an api key
-            const password = userProfile.password;
-
             this.client.state.generateDevice(username);
             await this.client.account.login(username, password);
             resolve(this);

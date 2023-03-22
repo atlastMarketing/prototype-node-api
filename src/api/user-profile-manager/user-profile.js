@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const GeoJSON = require('mongoose-geojson-schema');
 const { Schema } = require('mongoose');
 
-const userProfileSchema = new Schema({
+const socialMediaCredentialsSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -10,10 +10,25 @@ const userProfileSchema = new Schema({
     password: {  // TODO: password isn't even in the database
         type: String,
         required: true
-    },
+    }
+});
+
+const userProfileSchema = new Schema({
     email: {
         type: String,
         required: true
+    },
+    instagram: {
+        type: socialMediaCredentialsSchema,
+        required: false
+    },
+    facebook: {
+        type: socialMediaCredentialsSchema,
+        required: false
+    },
+    twitter: {
+        type: socialMediaCredentialsSchema,
+        required: false
     },
     business_name: {
         type: String,

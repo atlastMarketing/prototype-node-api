@@ -68,7 +68,7 @@ router.delete('/:userId', async (req, res) => {
     try {
         await userProfileManager.deleteProfile(userId);
 
-        console.log('User Profile was deleted successful!');
+        console.log('User Profile was deleted successfully!');
         res.status(204);
     } catch (err) {
         console.log('User Profile failed to be deleted!');
