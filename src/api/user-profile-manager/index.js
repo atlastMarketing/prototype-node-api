@@ -57,7 +57,7 @@ router.put('/', async (req, res) => {
         await userProfileManager.updateProfile(id, update);
 
         console.log("User Profile was updated successful!");
-        res.status(200);
+        res.status(200).end();
     } catch (err) {
         console.log("User Profile failed to update!");
         res.status(err.status || 400).json(err);
@@ -76,7 +76,7 @@ router.delete('/', async (req, res) => {
         await userProfileManager.deleteProfile(id);
 
         console.log("User Profile was deleted successful!");
-        res.status(200);
+        res.status(200).end();
     } catch (err) {
         console.log("User Profile failed to be delete!");
         res.status(err.status || 400).json(err);
