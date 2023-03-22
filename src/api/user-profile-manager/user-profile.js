@@ -20,15 +20,15 @@ const userProfileSchema = new Schema({
     },
     instagram: {
         type: socialMediaCredentialsSchema,
-        required: true
+        required: false
     },
     facebook: {
         type: socialMediaCredentialsSchema,
-        required: true
+        required: false
     },
     twitter: {
         type: socialMediaCredentialsSchema,
-        required: true
+        required: false
     },
     business_name: {
         type: String,
