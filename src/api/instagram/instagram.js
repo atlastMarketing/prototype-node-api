@@ -18,8 +18,9 @@ class Instagram {
 
         return new Promise(async (resolve) => {
             const userProfile = await userProfileManager.findProfile(id);
-            const username = userProfile.username;  // TODO: these should be replaced with an api key
-            const password = userProfile.password;
+            const instagram = userProfile.instagram;
+            const username = instagram.username;  // TODO: these should be replaced with an api key
+            const password = instagram.password;
 
             this.client.state.generateDevice(username);
             await this.client.account.login(username, password);
