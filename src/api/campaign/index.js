@@ -3,6 +3,7 @@ const router = require('express').Router();
 const { APIError } = require('../../_error');
 const { REGULAR_CAMPAIGN_TYPES_ENUM, IRREGULAR_CAMPAIGN_TYPES_ENUM } = require('../../constants/enum');
 const {
+    dateRecommenderDaily,
     dateRecommenderWeekly,
     dateRecommenderMonthly,
     dateRecommenderEvent,
@@ -53,6 +54,12 @@ const generateRegularCampaign = async (req, res) => {
             });
         } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_WEEKLY) {
             campaignData = dateRecommenderWeekly(promptInfo.platform, {
+                startDate,
+                endDate,
+                timezone,
+            });
+        } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_DAILY) {
+            campaignData = dateRecommenderDaily(promptInfo.platform, {
                 startDate,
                 endDate,
                 timezone,

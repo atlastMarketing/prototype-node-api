@@ -30,6 +30,8 @@ const timeRecommender = (
     }
 };
 
+const CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX = 180;
+
 const CAMPAIGN_DEFAULTS_REGULAR__WEEKLY = [
     // maximum 6 months
     0, 7, 14, 21, 28, 35, 42, 49,
@@ -114,6 +116,44 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
     }
 };
 
+const dateRecommenderDaily = (medium, dateInfo) => {
+    try {
+        const {
+            startDate,
+            endDate = null,
+            timezone = DEFAULT_TIMEZONE,
+        } = dateInfo;
+
+        const campaignList = [];
+        const startTime = DateTime.fromMillis(startDate).setZone(timezone);
+        const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
+
+        let totalDays = CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX;
+
+        if (endTime) {
+            totalDays = Math.min(endTime.diff(startTime, ['days']).days, CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX);
+        }
+
+        for (let i = 0; i < totalDays; i += 1) {
+            let currDate = startTime.plus({ days: i });
+            const [timeHour, timeMin] = timeRecommender(currDate.day, timezone, medium);
+            currDate = currDate.set({
+                hour: timeHour,
+                minute: timeMin,
+                second: 0,
+                millisecond: 0,
+            });
+            if (endTime && currDate > endTime) break;
+
+            campaignList.push(currDate.toMillis());
+        }
+
+        return campaignList;
+    } catch (err) {
+        throw new APIError('Failed to create daily campaign', 500);
+    }
+};
+
 const dateRecommenderEvent = (medium, dateInfo) => {
     try {
         const {
@@ -159,6 +199,7 @@ const dateRecommenderEvent = (medium, dateInfo) => {
 
 module.exports = {
     timeRecommender,
+    dateRecommenderDaily,
     dateRecommenderWeekly,
     dateRecommenderMonthly,
     dateRecommenderEvent,
