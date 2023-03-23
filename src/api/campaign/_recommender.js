@@ -1,32 +1,76 @@
 const { DateTime } = require('luxon');
+const { SOCIAL_MEDIA_PLATFORMS } = require('../../constants/enum');
 const { APIError } = require('../../_error');
 
 const DEFAULT_TIMEZONE = 'America/Vancouver';
 
 const timeRecommender = (
     day,
-    // medium,
+    platform,
 ) => {
-    // TODO: differentiate by medium
+    // TODO: differentiate by platform
     // https://sproutsocial.com/insights/best-times-to-post-on-social-media/
     // also need to get correct values
-    switch (day) {
-    case 0: // sunday -- 9 am
-        return [9, 0];
-    case 1:
-        return [11, 0];
-    case 2:
-        return [10, 0];
-    case 3:
-        return [10, 0];
-    case 4:
-        return [11, 0];
-    case 5:
-        return [11, 0];
-    case 6:
-        return [9, 0];
-    default:
-        return [9, 0];
+
+    const randomizer = Math.floor(Math.random() * 4);
+
+    if (platform === SOCIAL_MEDIA_PLATFORMS.FACEBOOK) {
+        switch (day) {
+        case 0: // sunday -- 9 am
+            return [[8, 0], [9, 0], [10, 0], [11, 0]][randomizer];
+        case 1:
+            return [[3, 0], [7, 0], [9, 0], [10, 0]][randomizer];
+        case 2:
+            return [[3, 0], [10, 0], [11, 0], [12, 0]][randomizer];
+        case 3:
+            return [[2, 0], [3, 0], [4, 0], [8, 0]][randomizer];
+        case 4:
+            return [[2, 0], [3, 0], [8, 0], [9, 0]][randomizer];
+        case 5:
+            return [[3, 0], [4, 0], [10, 0], [11, 0]][randomizer];
+        case 6:
+            return [[7, 0], [8, 0], [9, 0], [10, 0]][randomizer];
+        default:
+            return [3, 0];
+        }
+    } else if (platform === SOCIAL_MEDIA_PLATFORMS.TWITTER) {
+        switch (day) {
+        case 0: // sunday -- 9 am
+            return [[9, 0], [10, 0], [11, 0], [19, 0]][randomizer];
+        case 1:
+            return [[8, 0], [9, 0], [10, 0], [11, 0]][randomizer];
+        case 2:
+            return [[9, 0], [10, 0], [11, 0], [12, 0]][randomizer];
+        case 3:
+            return [[8, 0], [9, 0], [10, 0], [11, 0]][randomizer];
+        case 4:
+            return [[9, 0], [10, 0], [13, 0], [21, 0]][randomizer];
+        case 5:
+            return [[7, 0], [9, 0], [10, 0], [11, 0]][randomizer];
+        case 6:
+            return [[7, 0], [8, 0], [9, 0], [10, 0]][randomizer];
+        default:
+            return [9, 0];
+        }
+    } else { // instagram
+        switch (day) {
+        case 0: // sunday -- 9 am
+            return [[9, 0], [10, 0], [11, 0], [19, 0]][randomizer];
+        case 1:
+            return [[10, 0], [11, 0], [12, 0], [13, 0]][randomizer];
+        case 2:
+            return [[10, 0], [11, 0], [12, 0], [13, 0]][randomizer];
+        case 3:
+            return [[10, 0], [11, 0], [12, 0], [13, 0]][randomizer];
+        case 4:
+            return [[9, 0], [10, 0], [11, 0], [12, 0]][randomizer];
+        case 5:
+            return [[9, 0], [10, 0], [11, 0], [12, 0]][randomizer];
+        case 6:
+            return [[8, 0], [9, 0], [10, 0], [11, 0]][randomizer];
+        default:
+            return [9, 0];
+        }
     }
 };
 
@@ -48,7 +92,7 @@ const CAMPAIGN_DEFAULTS_IRREGULAR__EVENT = [
     0, 1, 2, 3, 5, 7, 14, 21, 28,
 ];
 
-const dateRecommenderMonthly = (medium, dateInfo) => {
+const dateRecommenderMonthly = (platform, dateInfo) => {
     try {
         const {
             startDate,
@@ -68,7 +112,7 @@ const dateRecommenderMonthly = (medium, dateInfo) => {
             const monthInterval = CAMPAIGN_DEFAULTS_REGULAR__MONTHLY[i];
 
             let currDate = startTime.plus({ months: monthInterval });
-            const [timeHour, timeMin] = timeRecommender(currDate.day, timezone, medium);
+            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
             currDate = currDate.set({
                 hour: timeHour,
                 minute: timeMin,
@@ -86,7 +130,7 @@ const dateRecommenderMonthly = (medium, dateInfo) => {
     }
 };
 
-const dateRecommenderWeekly = (medium, dateInfo) => {
+const dateRecommenderWeekly = (platform, dateInfo) => {
     try {
         const {
             startDate,
@@ -106,7 +150,7 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
             const dayInterval = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY[i];
 
             let currDate = startTime.plus({ days: dayInterval });
-            const [timeHour, timeMin] = timeRecommender(currDate, timezone, medium);
+            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
             currDate = currDate.set({
                 hour: timeHour,
                 minute: timeMin,
@@ -124,7 +168,7 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
     }
 };
 
-const dateRecommenderDaily = (medium, dateInfo) => {
+const dateRecommenderDaily = (platform, dateInfo) => {
     try {
         const {
             startDate,
@@ -146,7 +190,7 @@ const dateRecommenderDaily = (medium, dateInfo) => {
 
         for (let i = 0; i < totalPosts; i += 1) {
             let currDate = startTime.plus({ days: i });
-            const [timeHour, timeMin] = timeRecommender(currDate.day, timezone, medium);
+            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
             currDate = currDate.set({
                 hour: timeHour,
                 minute: timeMin,
@@ -164,7 +208,7 @@ const dateRecommenderDaily = (medium, dateInfo) => {
     }
 };
 
-const dateRecommenderEvent = (medium, dateInfo) => {
+const dateRecommenderEvent = (platform, dateInfo) => {
     try {
         const {
             startDate = null,
@@ -195,7 +239,7 @@ const dateRecommenderEvent = (medium, dateInfo) => {
             if (daysBetween != null && daysUntil > daysBetween) break;
 
             let currDate = endTime.minus({ days: daysUntil });
-            const [timeHour, timeMin] = timeRecommender(currDate, timezone, medium);
+            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
             currDate = currDate.set({
                 hour: timeHour,
                 minute: timeMin,

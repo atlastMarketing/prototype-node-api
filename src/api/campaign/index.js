@@ -1,7 +1,11 @@
 const router = require('express').Router();
 
 const { APIError } = require('../../_error');
-const { REGULAR_CAMPAIGN_TYPES_ENUM, IRREGULAR_CAMPAIGN_TYPES_ENUM } = require('../../constants/enum');
+const {
+    REGULAR_CAMPAIGN_TYPES_ENUM,
+    IRREGULAR_CAMPAIGN_TYPES_ENUM,
+    SOCIAL_MEDIA_PLATFORMS,
+} = require('../../constants/enum');
 const {
     dateRecommenderDaily,
     dateRecommenderWeekly,
@@ -46,23 +50,24 @@ const generateRegularCampaign = async (req, res) => {
         }
 
         // FUNCTIONALITY
+        const { platform = SOCIAL_MEDIA_PLATFORMS.INSTAGRAM } = promptInfo;
         let campaignData = [];
         if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_MONTHLY) {
-            campaignData = dateRecommenderMonthly(promptInfo.platform, {
+            campaignData = dateRecommenderMonthly(platform, {
                 startDate,
                 endDate,
                 timezone,
                 maxPosts,
             });
         } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_WEEKLY) {
-            campaignData = dateRecommenderWeekly(promptInfo.platform, {
+            campaignData = dateRecommenderWeekly(platform, {
                 startDate,
                 endDate,
                 timezone,
                 maxPosts,
             });
         } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_DAILY) {
-            campaignData = dateRecommenderDaily(promptInfo.platform, {
+            campaignData = dateRecommenderDaily(platform, {
                 startDate,
                 endDate,
                 timezone,
