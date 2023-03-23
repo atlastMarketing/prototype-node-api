@@ -17,18 +17,18 @@ require('dotenv').config();
 
 const DEFAULT_REGULAR_CAMPAIGN_TYPE = REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_WEEKLY;
 const DEFAULT_IRRREGULAR_CAMPAIGN_TYPE = REGULAR_CAMPAIGN_TYPES_ENUM.EVENT;
-// const DEFAULT_TIMEZONE = 'America/Vancouver';
+const DEFAULT_TIMEZONE = 'America/Vancouver';
 
 const generateRegularCampaign = async (req, res) => {
     try {
         const {
-            prompt,
+            prompt, // required
             prompt_info: promptInfo = {},
             campaign_type: campaignType = DEFAULT_REGULAR_CAMPAIGN_TYPE,
-            start_date: startDate,
-            end_date: endDate,
-            timezone,
-            max_posts: maxPosts,
+            start_date: startDate, // required
+            end_date: endDate = null,
+            timezone = DEFAULT_TIMEZONE, // TODO: required
+            max_posts: maxPosts = null,
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
             // meta_business: metaBusiness = {},
@@ -37,6 +37,7 @@ const generateRegularCampaign = async (req, res) => {
 
         // VALIDATION
         if (!prompt) throw new APIError('Prompt was not given!', 400, 'Bad Request');
+        if (!startDate) throw new APIError('Start date was not given!', 400, 'Bad Request');
         // TODO: user auth
         // if (!metaUser) throw new APIError('User not identified!', 403);
         // const {
@@ -85,15 +86,13 @@ const generateRegularCampaign = async (req, res) => {
 const generateIrregularCampaign = async (req, res) => {
     try {
         const {
-            prompt,
+            prompt, // required
             prompt_info: promptInfo = {},
             campaign_type: campaignType = DEFAULT_IRRREGULAR_CAMPAIGN_TYPE,
-            start_date: startDate,
-            end_date: endDate,
-            timezone,
-            // TODO: max popsts
-            max_psts: maxPosts,
-
+            start_date: startDate = null,
+            end_date: endDate, // required
+            timezone = DEFAULT_TIMEZONE, // TODO: required
+            max_psts: maxPosts = null,
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
             // meta_business: metaBusiness = {},
@@ -115,8 +114,9 @@ const generateIrregularCampaign = async (req, res) => {
         }
 
         // FUNCTIONALITY
+        const { platform = SOCIAL_MEDIA_PLATFORMS.INSTAGRAM } = promptInfo;
         const campaignData = await dateRecommenderEvent(
-            promptInfo.platform,
+            platform,
             {
                 startDate,
                 endDate,

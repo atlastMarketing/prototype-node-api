@@ -1,9 +1,8 @@
-const engineerPrompt = ({
-    prompt,
-    voice = null,
-    platform = null,
-    businessDescription = null,
-    businessLocation = null,
+const engineerPrompt = (prompt, {
+    voice,
+    platform,
+    businessDescription,
+    businessLocation,
 }) => {
     let finalPrompt = '';
 

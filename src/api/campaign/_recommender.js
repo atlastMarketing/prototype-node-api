@@ -2,8 +2,6 @@ const { DateTime } = require('luxon');
 const { SOCIAL_MEDIA_PLATFORMS } = require('../../constants/enum');
 const { APIError } = require('../../_error');
 
-const DEFAULT_TIMEZONE = 'America/Vancouver';
-
 const timeRecommender = (
     day,
     platform,
@@ -97,7 +95,7 @@ const dateRecommenderMonthly = (platform, dateInfo) => {
         const {
             startDate,
             endDate = null,
-            timezone = DEFAULT_TIMEZONE,
+            timezone,
             maxPosts = null,
         } = dateInfo;
 
@@ -135,7 +133,7 @@ const dateRecommenderWeekly = (platform, dateInfo) => {
         const {
             startDate,
             endDate = null,
-            timezone = DEFAULT_TIMEZONE,
+            timezone,
             maxPosts = null,
         } = dateInfo;
 
@@ -173,7 +171,7 @@ const dateRecommenderDaily = (platform, dateInfo) => {
         const {
             startDate,
             endDate = null,
-            timezone = DEFAULT_TIMEZONE,
+            timezone,
             maxPosts = null,
         } = dateInfo;
 
@@ -213,7 +211,7 @@ const dateRecommenderEvent = (platform, dateInfo) => {
         const {
             startDate = null,
             endDate,
-            timezone = DEFAULT_TIMEZONE,
+            timezone,
             maxPosts = null,
         } = dateInfo;
 

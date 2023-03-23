@@ -17,10 +17,10 @@ const openai = new OpenAIApi(configuration);
 const _fetchCompletion = async (prompt, options) => {
     try {
         const {
-            temperature = 0.6,
-            numOptions = NUM_OPTIONS_DEFAULT,
-            userId = null,
-            maxTokens = MAX_TOKENS_DEFAULT,
+            temperature,
+            numOptions,
+            userId,
+            maxTokens,
         } = options;
 
         const completion = await openai.createCompletion({
@@ -57,24 +57,26 @@ const generateCaption = async (req, res) => {
         } = metaUser;
 
         // FUNCTIONALITY
-        const engineeredPrompt = engineerPrompt({
-            prompt,
-            voice: promptInfo.voice,
-            platform: promptInfo.platform,
-            businessDescription: metaBusiness.business_description,
-            businessLocation: metaBusiness.business_location,
+        const engineeredPrompt = engineerPrompt(prompt, {
+            voice: promptInfo.voice || null,
+            platform: promptInfo.platform || null,
+            businessDescription: metaBusiness.business_description || null,
+            businessLocation: metaBusiness.business_location || null,
         });
 
         // completion options
+        const { generation_num: generationNum = 1 } = metaPrompt;
 
         const temperature = calculateTemperature({
-            generationNum: metaPrompt.generation_num,
+            generationNum,
         });
-        console.debug(`Generation number ${metaPrompt.generation_num}, used temperature val: ${temperature}`);
+        console.debug(`Generation number ${generationNum}, used temperature val: ${temperature}`);
+
+        const { num_options: numOptions = NUM_OPTIONS_DEFAULT } = promptInfo;
 
         const completionOptions = {
             temperature,
-            numOptions: promptInfo.num_options,
+            numOptions,
             userId,
             // TODO: use platform to get maximum number of tokens
             maxTokens: MAX_TOKENS_DEFAULT,
