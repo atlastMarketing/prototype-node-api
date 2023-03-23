@@ -1,7 +1,9 @@
 const express = require('express');
 
-const gpt3 = require('./gpt3');
-const Instagram = require('./instagram');
+const campaign = require('./campaign');
+const gpt3 = require('./gpt/gpt3');
+const instagram = require('./instagram');
+const userProfileManager = require('./user-profile-manager');
 
 require('dotenv').config();
 
@@ -13,25 +15,9 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', async (req, res) => {
-  const content = req.body;
-
-  /* eslint-disable no-console */
-  console.log("Received post request:");
-  console.log(content);
-  console.log("Posting...");
-
-  const instagram = await new Instagram(
-    process.env.INSTAGRAM_USERNAME,
-    process.env.INSTAGRAM_PASSWORD
-  );
-
-  await instagram.post(content.imageUrl, content.caption);
-
-  console.log("Post successful!");
-  /* eslint-enable no-console */
-});
-
 router.use('/ml', gpt3);
+router.use('/campaign', campaign);
+router.use('/user', userProfileManager);
+router.use('/instagram', instagram);
 
 module.exports = router;

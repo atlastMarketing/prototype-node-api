@@ -1,9 +1,8 @@
-const engineerPrompt = ({
-    prompt,
-    voice = null,
-    platform = null,
-    businessDescription = null,
-    businessLocation = null,
+const engineerPrompt = (prompt, {
+    voice,
+    platform,
+    businessDescription,
+    businessLocation,
 }) => {
     let finalPrompt = '';
 
@@ -32,7 +31,7 @@ const engineerPrompt = ({
     return finalPrompt;
 };
 
-const MAX_TEMPERATURE = 0.6;
+const MAX_TEMPERATURE = 1;
 const MIN_TEMPERATURE = 0.3;
 
 const calculateTemperature = ({

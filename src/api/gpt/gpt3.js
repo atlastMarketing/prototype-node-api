@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require('openai');
 const router = require('express').Router();
 
-const { handleGPTError, APIError } = require('../_error');
+const { handleGPTError, APIError } = require('../../_error');
 const { engineerPrompt, calculateTemperature } = require('./_prompt');
 
 require('dotenv').config();
@@ -17,10 +17,10 @@ const openai = new OpenAIApi(configuration);
 const _fetchCompletion = async (prompt, options) => {
     try {
         const {
-            temperature = 0.6,
-            numOptions = NUM_OPTIONS_DEFAULT,
-            userId = null,
-            maxTokens = MAX_TOKENS_DEFAULT,
+            temperature,
+            numOptions,
+            userId,
+            maxTokens,
         } = options;
 
         const completion = await openai.createCompletion({
@@ -42,10 +42,10 @@ const generateCaption = async (req, res) => {
     try {
         const {
             prompt,
-            prompt_info = {},
-            meta_user = {},
-            meta_business = {},
-            meta_prompt = {},
+            prompt_info: promptInfo = {},
+            meta_user: metaUser = {},
+            meta_business: metaBusiness = {},
+            meta_prompt: metaPrompt = {},
         } = req.body;
 
         // VALIDATION
@@ -54,26 +54,29 @@ const generateCaption = async (req, res) => {
         // if (!meta_user) throw new APIError('User not identified!', 403);
         const {
             user_id: userId = 'UNKNOWN_USER',
-        } = meta_user;
+        } = metaUser;
 
         // FUNCTIONALITY
-        const engineeredPrompt = engineerPrompt({
-            prompt,
-            voice: prompt_info.voice,
-            platform: prompt_info.platform,
-            businessDescription: meta_business.business_description,
-            businessLocation: meta_business.business_location,
+        const engineeredPrompt = engineerPrompt(prompt, {
+            voice: promptInfo.voice || null,
+            platform: promptInfo.platform || null,
+            businessDescription: metaBusiness.business_description || null,
+            businessLocation: metaBusiness.business_location || null,
         });
 
         // completion options
+        const { generation_num: generationNum = 1 } = metaPrompt;
 
         const temperature = calculateTemperature({
-            generationNum: meta_prompt.generation_num,
+            generationNum,
         });
+        console.debug(`Generation number ${generationNum}, used temperature val: ${temperature}`);
+
+        const { num_options: numOptions = NUM_OPTIONS_DEFAULT } = promptInfo;
 
         const completionOptions = {
             temperature,
-            numOptions: prompt_info.num_options,
+            numOptions,
             userId,
             // TODO: use platform to get maximum number of tokens
             maxTokens: MAX_TOKENS_DEFAULT,
@@ -95,7 +98,7 @@ const generateCaption = async (req, res) => {
         } = completionData;
         const token_usage = usage.total_tokens;
         // TODO: save token usage for the given user
-        console.log(`User "${userId}" used up ${token_usage} tokens for the following completion task:\n${JSON.stringify(completionTask, null, 2)}`);
+        console.debug(`User "${userId}" used up ${token_usage} tokens for the following completion task:\n${JSON.stringify(completionTask, null, 2)}`);
 
         // RETURN
         res.status(200).json(completionData);
@@ -104,5 +107,5 @@ const generateCaption = async (req, res) => {
     }
 };
 
-router.get('/caption', generateCaption);
+router.post('/caption', generateCaption);
 module.exports = router;
