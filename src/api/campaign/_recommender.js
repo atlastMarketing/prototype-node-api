@@ -170,6 +170,7 @@ const dateRecommenderEvent = (medium, dateInfo) => {
             startDate = null,
             endDate,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const endTime = DateTime.fromMillis(endDate).setZone(timezone);
@@ -186,7 +187,10 @@ const dateRecommenderEvent = (medium, dateInfo) => {
             daysBetween = endTime.diffNow('day');
         }
 
-        for (let i = 0; i < CAMPAIGN_DEFAULTS_IRREGULAR__EVENT.length; i += 1) {
+        let totalPosts = CAMPAIGN_DEFAULTS_IRREGULAR__EVENT.length;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        for (let i = 0; i < totalPosts; i += 1) {
             const daysUntil = CAMPAIGN_DEFAULTS_IRREGULAR__EVENT[i];
             if (daysBetween != null && daysUntil > daysBetween) break;
 

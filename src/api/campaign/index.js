@@ -87,7 +87,7 @@ const generateIrregularCampaign = async (req, res) => {
             end_date: endDate,
             timezone,
             // TODO: max popsts
-            // max_psts: maxPosts,
+            max_psts: maxPosts,
 
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
@@ -116,6 +116,7 @@ const generateIrregularCampaign = async (req, res) => {
                 startDate,
                 endDate,
                 timezone,
+                maxPosts,
             },
         );
 
