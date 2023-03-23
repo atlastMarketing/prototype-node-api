@@ -29,6 +29,7 @@ Generates a regular repetitive campaign for a specific platform and according to
     "start_date": 1680307200380,
     "end_date": 1685577600380,
     "timezone": "America/Vancouver",
+    "max_posts": 1,
     "meta_user": {
         "user_id": 1234567890
     },
@@ -70,6 +71,7 @@ Generates an irregular campaign for a specific platform and according to specifi
     "start_date": 1680307200380,
     "end_date": 1685577600380,
     "timezone": "America/Vancouver",
+    "max_posts": 1,
     "meta_user": {
         "user_id": 1234567890
     },

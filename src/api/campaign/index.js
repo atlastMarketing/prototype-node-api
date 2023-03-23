@@ -3,6 +3,7 @@ const router = require('express').Router();
 const { APIError } = require('../../_error');
 const { REGULAR_CAMPAIGN_TYPES_ENUM, IRREGULAR_CAMPAIGN_TYPES_ENUM } = require('../../constants/enum');
 const {
+    dateRecommenderDaily,
     dateRecommenderWeekly,
     dateRecommenderMonthly,
     dateRecommenderEvent,
@@ -23,6 +24,7 @@ const generateRegularCampaign = async (req, res) => {
             start_date: startDate,
             end_date: endDate,
             timezone,
+            max_posts: maxPosts,
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
             // meta_business: metaBusiness = {},
@@ -50,12 +52,21 @@ const generateRegularCampaign = async (req, res) => {
                 startDate,
                 endDate,
                 timezone,
+                maxPosts,
             });
         } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_WEEKLY) {
             campaignData = dateRecommenderWeekly(promptInfo.platform, {
                 startDate,
                 endDate,
                 timezone,
+                maxPosts,
+            });
+        } else if (campaignType === REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_DAILY) {
+            campaignData = dateRecommenderDaily(promptInfo.platform, {
+                startDate,
+                endDate,
+                timezone,
+                maxPosts,
             });
         }
 
@@ -75,6 +86,9 @@ const generateIrregularCampaign = async (req, res) => {
             start_date: startDate,
             end_date: endDate,
             timezone,
+            // TODO: max popsts
+            max_psts: maxPosts,
+
             // TODO: consider business information and prompt
             // meta_user: metaUser = {},
             // meta_business: metaBusiness = {},
@@ -102,6 +116,7 @@ const generateIrregularCampaign = async (req, res) => {
                 startDate,
                 endDate,
                 timezone,
+                maxPosts,
             },
         );
 

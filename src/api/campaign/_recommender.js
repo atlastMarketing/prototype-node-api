@@ -30,6 +30,8 @@ const timeRecommender = (
     }
 };
 
+const CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX = 180;
+
 const CAMPAIGN_DEFAULTS_REGULAR__WEEKLY = [
     // maximum 6 months
     0, 7, 14, 21, 28, 35, 42, 49,
@@ -52,13 +54,17 @@ const dateRecommenderMonthly = (medium, dateInfo) => {
             startDate,
             endDate = null,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const campaignList = [];
         const startTime = DateTime.fromMillis(startDate).setZone(timezone);
         const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
-        for (let i = 0; i < CAMPAIGN_DEFAULTS_REGULAR__MONTHLY.length; i += 1) {
+        let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__MONTHLY.length;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        for (let i = 0; i < totalPosts; i += 1) {
             const monthInterval = CAMPAIGN_DEFAULTS_REGULAR__MONTHLY[i];
 
             let currDate = startTime.plus({ months: monthInterval });
@@ -86,13 +92,17 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
             startDate,
             endDate = null,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const campaignList = [];
         const startTime = DateTime.fromMillis(startDate).setZone(timezone);
         const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
 
-        for (let i = 0; i < CAMPAIGN_DEFAULTS_REGULAR__WEEKLY.length; i += 1) {
+        let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY.length;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        for (let i = 0; i < totalPosts; i += 1) {
             const dayInterval = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY[i];
 
             let currDate = startTime.plus({ days: dayInterval });
@@ -114,12 +124,53 @@ const dateRecommenderWeekly = (medium, dateInfo) => {
     }
 };
 
+const dateRecommenderDaily = (medium, dateInfo) => {
+    try {
+        const {
+            startDate,
+            endDate = null,
+            timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
+        } = dateInfo;
+
+        const campaignList = [];
+        const startTime = DateTime.fromMillis(startDate).setZone(timezone);
+        const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
+
+        let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        if (endTime) {
+            totalPosts = Math.min(endTime.diff(startTime, ['days']).days, totalPosts);
+        }
+
+        for (let i = 0; i < totalPosts; i += 1) {
+            let currDate = startTime.plus({ days: i });
+            const [timeHour, timeMin] = timeRecommender(currDate.day, timezone, medium);
+            currDate = currDate.set({
+                hour: timeHour,
+                minute: timeMin,
+                second: 0,
+                millisecond: 0,
+            });
+            if (endTime && currDate > endTime) break;
+
+            campaignList.push(currDate.toMillis());
+        }
+
+        return campaignList;
+    } catch (err) {
+        throw new APIError('Failed to create daily campaign', 500);
+    }
+};
+
 const dateRecommenderEvent = (medium, dateInfo) => {
     try {
         const {
             startDate = null,
             endDate,
             timezone = DEFAULT_TIMEZONE,
+            maxPosts = null,
         } = dateInfo;
 
         const endTime = DateTime.fromMillis(endDate).setZone(timezone);
@@ -136,7 +187,10 @@ const dateRecommenderEvent = (medium, dateInfo) => {
             daysBetween = endTime.diffNow('day');
         }
 
-        for (let i = 0; i < CAMPAIGN_DEFAULTS_IRREGULAR__EVENT.length; i += 1) {
+        let totalPosts = CAMPAIGN_DEFAULTS_IRREGULAR__EVENT.length;
+        if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
+
+        for (let i = 0; i < totalPosts; i += 1) {
             const daysUntil = CAMPAIGN_DEFAULTS_IRREGULAR__EVENT[i];
             if (daysBetween != null && daysUntil > daysBetween) break;
 
@@ -159,6 +213,7 @@ const dateRecommenderEvent = (medium, dateInfo) => {
 
 module.exports = {
     timeRecommender,
+    dateRecommenderDaily,
     dateRecommenderWeekly,
     dateRecommenderMonthly,
     dateRecommenderEvent,
