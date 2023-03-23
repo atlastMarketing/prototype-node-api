@@ -24,6 +24,7 @@ Generates a caption for a specific platform, and according to a specific prompt
     "prompt_info": {
         "voice": "professional",
         "platform": "Instagram"
+        "num_options": 3
     },
     "meta_user": {
         "user_id": 1234567890
