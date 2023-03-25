@@ -28,6 +28,17 @@ async function findProfile(id) {
 }
 
 /**
+ * Find a user profile in the atlast mongodb userprofile collection
+ *
+ * @param {string} email The unique email of the profile
+ * @returns The user profile with the given id; null if the id doesn't correspond to any user profile
+ * @throws error if the profile was unable to be acquired
+ */
+async function findProfileByEmail(email) {
+    return UserProfile.findOne({ email });
+}
+
+/**
  * Delete a user profile from the atlast mongodb userprofile collection
  *
  * @param {string} id The id of the profile
@@ -54,4 +65,5 @@ module.exports = {
     findProfile,
     deleteProfile,
     updateProfile,
+    findProfileByEmail,
 };

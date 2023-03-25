@@ -29,7 +29,7 @@ router.get('/:userId', async (req, res) => {
     console.log(`Received profile get request for: ${userId}`);
 
     try {
-        const profile = await userProfileManager.findProfile(userId, 10);
+        const profile = await userProfileManager.findProfile(userId);
 
         console.log('User Profile was retrieved successfully!');
         console.log(profile);
@@ -73,6 +73,23 @@ router.delete('/:userId', async (req, res) => {
     } catch (err) {
         console.log('User Profile failed to be deleted!');
         res.status(err.status || 400).json(err);
+    }
+});
+
+router.post('/login', async (req, res) => {
+    const { email } = req.body;
+
+    console.log(`Received login request for email: ${email}`);
+
+    try {
+        const profile = await userProfileManager.findProfileByEmail(email);
+
+        console.log('User Profile was retrieved successfully!');
+        console.log(profile);
+        res.status(200).json(profile);
+    } catch (err) {
+        console.log('User Profile could not be found!');
+        res.status(err.status || 404).json(err);
     }
 });
 
