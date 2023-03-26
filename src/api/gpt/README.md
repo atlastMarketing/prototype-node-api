@@ -43,3 +43,38 @@ Generates a caption for a specific platform, and according to a specific prompt
     }
 }
 ```
+
+### Generate Suggestions (`POST /ml/suggestions`)
+Generates suggested captions according to the business type, if provided
+
+**JSON request body is required**.
+
+#### Sample JSON Request Body (Required Attributes):
+```
+{}
+```
+
+#### Sample JSON Request Body (Complete Attributes):
+```
+{
+    "prompt_info": {
+        "voice": "professional",
+        "platform": "Instagram"
+        "num_options": 3
+    },
+    "meta_user": {
+        "user_id": 1234567890
+    },
+    "meta_business": {
+        "business_name": "JAMPACK"
+        "business_type": "Physical Products"
+        "business_industry": "Professional, Scientific and Technical Services"
+        "business_description": "Local skincare shop that imports specialty skincare from Japan and Korea, for both men and women.",
+        "business_location": "Vancouver, BC, Canada",
+        "business_voice": "professional"
+    },
+    "meta_prompt": {
+        "full_catalyst": "original and unedited prompt entered by user"
+    }
+}
+```
