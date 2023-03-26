@@ -1,4 +1,4 @@
-const engineerPrompt = (prompt, {
+const engineerCaptionPrompt = (prompt, {
     voice,
     platform,
     businessDescription,
@@ -47,5 +47,5 @@ const calculateTemperature = ({
 
 module.exports = {
     calculateTemperature,
-    engineerPrompt,
+    engineerCaptionPrompt,
 };

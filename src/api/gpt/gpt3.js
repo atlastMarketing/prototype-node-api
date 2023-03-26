@@ -2,7 +2,7 @@ const { Configuration, OpenAIApi } = require('openai');
 const router = require('express').Router();
 
 const { handleGPTError, APIError } = require('../../_error');
-const { engineerPrompt, calculateTemperature } = require('./_prompt');
+const { engineerCaptionPrompt, calculateTemperature } = require('./_prompt');
 
 require('dotenv').config();
 
@@ -57,7 +57,7 @@ const generateCaption = async (req, res) => {
         } = metaUser;
 
         // FUNCTIONALITY
-        const engineeredPrompt = engineerPrompt(prompt, {
+        const engineeredPrompt = engineerCaptionPrompt(prompt, {
             voice: promptInfo.voice || null,
             platform: promptInfo.platform || null,
             businessDescription: metaBusiness.business_description || null,
