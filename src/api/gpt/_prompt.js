@@ -1,6 +1,7 @@
-const engineerPrompt = (prompt, {
+const engineerCaptionPrompt = (prompt, {
     voice,
     platform,
+    businessName,
     businessDescription,
     businessLocation,
 }) => {
@@ -9,9 +10,10 @@ const engineerPrompt = (prompt, {
     // METADATA
     if (businessDescription) {
         finalPrompt += 'Use the following description of a business';
+        if (businessName) finalPrompt += ` named '${businessName}'`;
         if (businessLocation) finalPrompt += ` located in ${businessLocation}`;
         finalPrompt += ':\n';
-        finalPrompt += `"${businessDescription}"\n\n`;
+        finalPrompt += `"${businessDescription}"\n`;
     }
 
     // PROMPT DETAILS
@@ -26,7 +28,7 @@ const engineerPrompt = (prompt, {
     finalPrompt += ' with the following prompt: \n';
 
     // USER PROMPT
-    finalPrompt += `"${prompt}"\n\n`;
+    finalPrompt += `"${prompt}"\n`;
 
     return finalPrompt;
 };
@@ -45,7 +47,52 @@ const calculateTemperature = ({
     return temperature;
 };
 
+const TOPIC_COLLECTION = [
+    'contests/giveaways',
+    'sale promotions',
+    'lifestyle advice',
+    'inspirational quotes',
+    'fun facts',
+    'special events',
+    'testimonials',
+];
+
+const engineerSuggestionPrompt = ({
+    voice,
+    platform,
+    businessName,
+    businessDescription,
+    businessLocation,
+}) => {
+    let finalPrompt = '';
+
+    // METADATA
+    if (businessDescription) {
+        finalPrompt += 'Use the following description of a business';
+        if (businessName) finalPrompt += ` named '${businessName}'`;
+        if (businessLocation) finalPrompt += ` located in ${businessLocation}`;
+        finalPrompt += ':\n';
+        finalPrompt += `"${businessDescription}"\n`;
+    }
+
+    // PROMPT DETAILS
+    // TODO: use platform to get maximum number of chars
+    const numChars = 150;
+    finalPrompt += `In around ${numChars} characters or less, create a caption`;
+    if (platform) finalPrompt += ` for a social media post on "${platform}",`;
+    else finalPrompt += ' for a social media post,';
+    if (voice) {
+        finalPrompt += `using a ${voice} voice,`;
+    }
+    finalPrompt += ' that is related to \n';
+
+    finalPrompt += `"${TOPIC_COLLECTION[Math.floor(Math.random() * TOPIC_COLLECTION.length)]}".`;
+
+    return finalPrompt;
+};
+
 module.exports = {
     calculateTemperature,
-    engineerPrompt,
+    engineerCaptionPrompt,
+    engineerSuggestionPrompt,
 };

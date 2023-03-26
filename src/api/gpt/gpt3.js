@@ -2,7 +2,13 @@ const { Configuration, OpenAIApi } = require('openai');
 const router = require('express').Router();
 
 const { handleGPTError, APIError } = require('../../_error');
-const { engineerPrompt, calculateTemperature } = require('./_prompt');
+const { DEFAULT_TIMEZONE } = require('../../constants/defaults');
+const {
+    engineerCaptionPrompt,
+    engineerSuggestionPrompt,
+    calculateTemperature,
+} = require('./_prompt');
+const { dateRecommenderToday } = require('../campaign/_recommender');
 
 require('dotenv').config();
 
@@ -57,9 +63,10 @@ const generateCaption = async (req, res) => {
         } = metaUser;
 
         // FUNCTIONALITY
-        const engineeredPrompt = engineerPrompt(prompt, {
-            voice: promptInfo.voice || null,
+        const engineeredPrompt = engineerCaptionPrompt(prompt, {
+            voice: promptInfo.voice || metaBusiness.voice || null,
             platform: promptInfo.platform || null,
+            businessName: metaBusiness.business_name || null,
             businessDescription: metaBusiness.business_description || null,
             businessLocation: metaBusiness.business_location || null,
         });
@@ -107,5 +114,77 @@ const generateCaption = async (req, res) => {
     }
 };
 
+const NUM_SUGGESTIONS = 5;
+
+const generateSuggestion = async (req, res) => {
+    try {
+        const {
+            prompt_info: promptInfo = {},
+            meta_user: metaUser = {},
+            meta_business: metaBusiness = {},
+            timezone = DEFAULT_TIMEZONE, // TODO: required
+            // meta_prompt: metaPrompt = {},
+        } = req.body;
+
+        // VALIDATION
+        // TODO: user auth
+        // if (!meta_user) throw new APIError('User not identified!', 403);
+        const {
+            user_id: userId = 'UNKNOWN_USER',
+        } = metaUser;
+
+        // completion options
+        const completionOptions = {
+            temperature: 1,
+            numOptions: 1,
+            userId,
+            // TODO: use platform to get maximum number of tokens
+            maxTokens: MAX_TOKENS_DEFAULT,
+        };
+
+        let totalTokenUsage = 0;
+
+        // CREATE PROMPT AND FETCH GPT3
+        const allCompletionData = await Promise.all(
+            Array(NUM_SUGGESTIONS).fill(0).map((async () => {
+                const engineeredPrompt = engineerSuggestionPrompt({
+                    voice: promptInfo.voice || metaBusiness.voice || null,
+                    platform: promptInfo.platform || null,
+                    businessName: metaBusiness.business_name || null,
+                    businessDescription: metaBusiness.business_description || null,
+                    businessLocation: metaBusiness.business_location || null,
+                });
+                const completionData = await _fetchCompletion(
+                    engineeredPrompt,
+                    completionOptions,
+                );
+                if (!completionData.usage || !completionData.usage.prompt_tokens) {
+                    throw new APIError('Completion data incomplete! Could not get token usage data.', 500);
+                }
+                const {
+                    usage,
+                    ...completionTask
+                } = completionData;
+
+                totalTokenUsage += usage.total_tokens;
+                return completionTask;
+            })),
+        );
+        const today = dateRecommenderToday(promptInfo.platform, timezone);
+
+        // TODO: save token usage for the given user
+        console.debug(`User "${userId}" used up ${totalTokenUsage} tokens for ${NUM_SUGGESTIONS} suggestion captions}`);
+
+        // RETURN
+        res.status(200).json({
+            date: today,
+            completions: allCompletionData,
+        });
+    } catch (err) {
+        res.status(err.status || 400).json(err);
+    }
+};
+
 router.post('/caption', generateCaption);
+router.post('/suggestions', generateSuggestion);
 module.exports = router;
