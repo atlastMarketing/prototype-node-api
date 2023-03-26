@@ -133,12 +133,10 @@ const generateSuggestion = async (req, res) => {
             user_id: userId = 'UNKNOWN_USER',
         } = metaUser;
 
-        const { num_options: numOptions = NUM_OPTIONS_DEFAULT } = promptInfo;
-
         // completion options
         const completionOptions = {
             temperature: 1,
-            numOptions,
+            numOptions: 1,
             userId,
             // TODO: use platform to get maximum number of tokens
             maxTokens: MAX_TOKENS_DEFAULT,
@@ -160,7 +158,6 @@ const generateSuggestion = async (req, res) => {
                     engineeredPrompt,
                     completionOptions,
                 );
-                console.log(completionData);
                 if (!completionData.usage || !completionData.usage.prompt_tokens) {
                     throw new APIError('Completion data incomplete! Could not get token usage data.', 500);
                 }
