@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
         const id = await userProfileManager.saveProfile(body);
 
         console.log('User Profile was saved successfully!');
-        res.status(201).json(id);
+        res.status(201).json({ _id: id });
     } catch (err) {
         console.log('User Profile failed to save!');
         res.status(err.status || 400).json(err);
@@ -83,6 +83,11 @@ router.post('/login', async (req, res) => {
 
     try {
         const profile = await userProfileManager.findProfileByEmail(email);
+        if (!profile) {
+            console.log('User Profile was not found!');
+            res.status(404).json(null);
+            return;
+        }
 
         console.log('User Profile was retrieved successfully!');
         console.log(profile);
