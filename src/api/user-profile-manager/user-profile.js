@@ -48,12 +48,20 @@ const userProfileSchema = new Schema({
     },
     business_location: {
         type: GeoJSON,
-        required: true
+        required: false,
     },
     business_voice: {
         type: String,
         required: false
-    }
+    },
+    business_url: {
+        type: String,
+        required: false,
+    },
+    avatar_image_url: {
+        type: String,
+        required: false,
+    },
 }, { timestamps: true });
 
 const UserProfile = mongoose.model('UserProfile', userProfileSchema);
