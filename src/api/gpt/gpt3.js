@@ -181,7 +181,6 @@ const generateSuggestion = async (req, res) => {
             completions: allCompletionData,
         });
     } catch (err) {
-        console.log({ err });
         res.status(err.status || 400).json(err);
     }
 };
