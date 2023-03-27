@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const CronJob = require('cron').CronJob;
 const Content = require('./models/Content');
+const Instagram = require('../instagram/instagram');
 
 
 async function initScheduler(mongo) {
@@ -23,8 +24,21 @@ async function initScheduler(mongo) {
       // Create new cron jobs for each content item
       console.log('Creating cron jobs for', content.length, 'content items');
       content.forEach((item) => {
-        const job = new CronJob(item.postDate, () => {
+        const job = new CronJob(item.postDate, async () => {
           console.log(`Posting ${item.caption} to ${item.socialMedia}`);
+          const instagram = await new Instagram(
+            process.env.INSTAGRAM_USERNAME,
+            process.env.INSTAGRAM_PASSWORD
+        );
+
+        const imageUrl = item.image_url;
+        const caption = item.caption;
+        try {
+          await instagram.post(imageUrl, caption);
+          console.log(`Successfully posted ${item.caption}`);
+        } catch (error) {
+          console.error(`Error posting ${item.caption}:`, error);
+        }
         });
         scheduleJobs.push(job);
         job.start();
