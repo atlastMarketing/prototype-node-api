@@ -253,10 +253,28 @@ const dateRecommenderEvent = (platform, dateInfo) => {
     }
 };
 
+const dateRecommenderToday = (platform, timezone) => {
+    try {
+        let today = DateTime.now().setZone(timezone);
+        const [timeHour, timeMin] = timeRecommender(today.weekDay, timezone, platform);
+        today = today.set({
+            hour: timeHour,
+            minute: timeMin,
+            second: 0,
+            millisecond: 0,
+        });
+
+        return today.toMillis();
+    } catch (err) {
+        throw new APIError('Failed to get recommended post time today', 500);
+    }
+};
+
 module.exports = {
     timeRecommender,
     dateRecommenderDaily,
     dateRecommenderWeekly,
     dateRecommenderMonthly,
     dateRecommenderEvent,
+    dateRecommenderToday,
 };

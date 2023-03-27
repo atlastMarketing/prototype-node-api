@@ -6,6 +6,7 @@ const {
     IRREGULAR_CAMPAIGN_TYPES_ENUM,
     SOCIAL_MEDIA_PLATFORMS,
 } = require('../../constants/enum');
+const { DEFAULT_TIMEZONE } = require('../../constants/defaults');
 const {
     dateRecommenderDaily,
     dateRecommenderWeekly,
@@ -17,7 +18,6 @@ require('dotenv').config();
 
 const DEFAULT_REGULAR_CAMPAIGN_TYPE = REGULAR_CAMPAIGN_TYPES_ENUM.REPEATED_WEEKLY;
 const DEFAULT_IRRREGULAR_CAMPAIGN_TYPE = REGULAR_CAMPAIGN_TYPES_ENUM.EVENT;
-const DEFAULT_TIMEZONE = 'America/Vancouver';
 
 const generateRegularCampaign = async (req, res) => {
     try {
