@@ -1,7 +1,5 @@
 const { IgApiClient } = require('instagram-private-api');
 const { get } = require('request-promise');
-const userProfileManager = require('../user-profile-manager/user-profile-manager');
-
 
 /**
  * An API client for a specific Instagram account

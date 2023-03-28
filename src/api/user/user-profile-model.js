@@ -5,46 +5,46 @@ const { Schema } = require('mongoose');
 const socialMediaCredentialsSchema = new Schema({
     username: {
         type: String,
-        required: true
+        required: true,
     },
-    password: {  // TODO: password isn't even in the database
+    password: { // TODO: password isn't even in the database
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const userProfileSchema = new Schema({
     email: {
         type: String,
-        required: true
+        required: true,
     },
     instagram: {
         type: socialMediaCredentialsSchema,
-        required: false
+        required: false,
     },
     facebook: {
         type: socialMediaCredentialsSchema,
-        required: false
+        required: false,
     },
     twitter: {
         type: socialMediaCredentialsSchema,
-        required: false
+        required: false,
     },
     business_name: {
         type: String,
-        required: false
+        required: false,
     },
     business_type: {
         type: String,
-        required: false
+        required: false,
     },
     business_industry: {
         type: String,
-        required: false
+        required: false,
     },
     business_description: {
         type: String,
-        required: false
+        required: false,
     },
     business_location: {
         type: GeoJSON,
@@ -52,7 +52,7 @@ const userProfileSchema = new Schema({
     },
     business_voice: {
         type: String,
-        required: false
+        required: false,
     },
     business_url: {
         type: String,

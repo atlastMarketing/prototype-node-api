@@ -1,7 +1,8 @@
 const express = require('express');
 const userProfileManager = require('./user-profile-manager');
-require('dotenv').config();
 /* eslint no-console: 0 */
+
+require('dotenv').config();
 
 const router = express.Router();
 
@@ -52,7 +53,7 @@ router.put('/:userId', async (req, res) => {
         await userProfileManager.updateProfile(userId, body);
 
         console.log('User Profile was updated successful!');
-        res.status(204).send();
+        res.status(204).send({});
     } catch (err) {
         console.log('User Profile failed to update!');
         res.status(err.status || 400).json(err);
@@ -69,7 +70,7 @@ router.delete('/:userId', async (req, res) => {
         await userProfileManager.deleteProfile(userId);
 
         console.log('User Profile was deleted successfully!');
-        res.status(204).send();
+        res.status(204).send({});
     } catch (err) {
         console.log('User Profile failed to be deleted!');
         res.status(err.status || 400).json(err);

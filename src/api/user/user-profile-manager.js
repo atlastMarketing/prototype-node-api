@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const UserProfile = require('./user-profile');
+const UserProfile = require('./user-profile-model');
 
 // TODO: solidify documentation and signatures with final database makeup
 
