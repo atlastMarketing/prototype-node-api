@@ -90,7 +90,7 @@ router.put('/:contentId', async (req, res) => {
 
         if (platform) contentData.platform = platform;
         if (imageUrl) contentData.image_url = imageUrl;
-        if (caption) contentData.caption = imageUrl;
+        if (caption) contentData.caption = caption;
         if (postDate) contentData.post_date = postDate;
         if (isDraft) contentData.is_draft = isDraft;
 
