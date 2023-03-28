@@ -128,6 +128,25 @@ const dateRecommenderMonthly = (platform, dateInfo) => {
     }
 };
 
+const sanitizeStartDate = (startDateInMillis, timezone) => {
+    if (!startDateInMillis) return null;
+    const currTime = DateTime.now();
+    let startDate = DateTime.fromMillis(startDateInMillis).setZone(timezone);
+    startDate = startDate.set({ hour: 0, minute: 0 });
+    if (startDate < currTime) {
+        return currTime;
+    }
+    return startDate;
+};
+
+const sanitizeEndDate = (endDateFromMillis, timezone) => {
+    if (!endDateFromMillis) return null;
+    let endDate = DateTime.fromMillis(endDateFromMillis).setZone(timezone);
+    endDate = endDate.set({ hour: 23, minute: 59 });
+
+    return endDate;
+};
+
 const dateRecommenderWeekly = (platform, dateInfo) => {
     try {
         const {
@@ -138,8 +157,8 @@ const dateRecommenderWeekly = (platform, dateInfo) => {
         } = dateInfo;
 
         const campaignList = [];
-        const startTime = DateTime.fromMillis(startDate).setZone(timezone);
-        const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
+        const startTime = sanitizeStartDate(startDate);
+        const endTime = sanitizeEndDate(endDate);
 
         let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY.length;
         if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
@@ -147,17 +166,19 @@ const dateRecommenderWeekly = (platform, dateInfo) => {
         for (let i = 0; i < totalPosts; i += 1) {
             const dayInterval = CAMPAIGN_DEFAULTS_REGULAR__WEEKLY[i];
 
-            let currDate = startTime.plus({ days: dayInterval });
-            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
-            currDate = currDate.set({
+            let recommended = startTime.plus({ days: dayInterval });
+            const [timeHour, timeMin] = timeRecommender(recommended.weekday, timezone, platform);
+            recommended = recommended.set({
                 hour: timeHour,
                 minute: timeMin,
                 second: 0,
                 millisecond: 0,
             });
-            if (endTime && currDate > endTime) break;
+            if (endTime && recommended > endTime) break;
 
-            campaignList.push(currDate.toMillis());
+            if (recommended >= startTime) {
+                campaignList.push(recommended.toMillis());
+            }
         }
 
         return campaignList;
@@ -176,8 +197,8 @@ const dateRecommenderDaily = (platform, dateInfo) => {
         } = dateInfo;
 
         const campaignList = [];
-        const startTime = DateTime.fromMillis(startDate).setZone(timezone);
-        const endTime = endDate ? DateTime.fromMillis(endDate).setZone(timezone) : null;
+        const startTime = sanitizeStartDate(startDate);
+        const endTime = sanitizeEndDate(endDate);
 
         let totalPosts = CAMPAIGN_DEFAULTS_REGULAR__DAILY_MAX;
         if (maxPosts && maxPosts < totalPosts) totalPosts = maxPosts;
@@ -187,17 +208,19 @@ const dateRecommenderDaily = (platform, dateInfo) => {
         }
 
         for (let i = 0; i < totalPosts; i += 1) {
-            let currDate = startTime.plus({ days: i });
-            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
-            currDate = currDate.set({
+            let recommended = startTime.plus({ days: i });
+            const [timeHour, timeMin] = timeRecommender(recommended.weekday, timezone, platform);
+            recommended = recommended.set({
                 hour: timeHour,
                 minute: timeMin,
                 second: 0,
                 millisecond: 0,
             });
-            if (endTime && currDate > endTime) break;
+            if (endTime && recommended > endTime) break;
 
-            campaignList.push(currDate.toMillis());
+            if (recommended >= startTime) {
+                campaignList.push(recommended.toMillis());
+            }
         }
 
         return campaignList;
@@ -215,15 +238,14 @@ const dateRecommenderEvent = (platform, dateInfo) => {
             maxPosts = null,
         } = dateInfo;
 
-        const endTime = DateTime.fromMillis(endDate).setZone(timezone);
+        const startTime = sanitizeStartDate(startDate);
+        const endTime = sanitizeEndDate(endDate);
 
         const campaignList = [];
         let daysBetween = 0;
 
         if (startDate) {
-            const startTime = DateTime.fromMillis(startDate).setZone(timezone);
             if (endTime < startTime) return campaignList;
-
             daysBetween = endTime.diff(startTime, 'day');
         } else {
             daysBetween = endTime.diffNow('day');
@@ -236,15 +258,17 @@ const dateRecommenderEvent = (platform, dateInfo) => {
             const daysUntil = CAMPAIGN_DEFAULTS_IRREGULAR__EVENT[i];
             if (daysBetween != null && daysUntil > daysBetween) break;
 
-            let currDate = endTime.minus({ days: daysUntil });
-            const [timeHour, timeMin] = timeRecommender(currDate.weekday, timezone, platform);
-            currDate = currDate.set({
+            let recommended = endTime.minus({ days: daysUntil });
+            const [timeHour, timeMin] = timeRecommender(recommended.weekday, timezone, platform);
+            recommended = recommended.set({
                 hour: timeHour,
                 minute: timeMin,
                 second: 0,
                 millisecond: 0,
             });
-            campaignList.push(currDate.toMillis());
+            if (recommended >= startTime) {
+                campaignList.push(recommended.toMillis());
+            }
         }
 
         return campaignList;
@@ -255,16 +279,19 @@ const dateRecommenderEvent = (platform, dateInfo) => {
 
 const dateRecommenderToday = (platform, timezone) => {
     try {
-        let today = DateTime.now().setZone(timezone);
-        const [timeHour, timeMin] = timeRecommender(today.weekDay, timezone, platform);
-        today = today.set({
+        const currDate = DateTime.now().setZone(timezone);
+        const [timeHour, timeMin] = timeRecommender(currDate.weekDay, timezone, platform);
+        const recommended = currDate.set({
             hour: timeHour,
             minute: timeMin,
             second: 0,
             millisecond: 0,
         });
 
-        return today.toMillis();
+        if (currDate <= recommended) {
+            return recommended.toMillis();
+        }
+        return null;
     } catch (err) {
         throw new APIError('Failed to get recommended post time today', 500);
     }
