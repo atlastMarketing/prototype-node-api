@@ -277,23 +277,30 @@ const dateRecommenderEvent = (platform, dateInfo) => {
     }
 };
 
-const dateRecommenderToday = (platform, timezone) => {
+const dateRecommenderTodayOrElse = (platform, timezone) => {
     try {
         const currDate = DateTime.now().setZone(timezone);
-        const [timeHour, timeMin] = timeRecommender(currDate.weekDay, timezone, platform);
-        const recommended = currDate.set({
-            hour: timeHour,
-            minute: timeMin,
-            second: 0,
-            millisecond: 0,
-        });
+        let recommended;
+        let dateCounter = 0;
 
-        if (currDate <= recommended) {
-            return recommended.toMillis();
+        while (!recommended || recommended < currDate) {
+            const dateToSearch = currDate.set({
+                day: currDate.day + dateCounter,
+            });
+
+            const [timeHour, timeMin] = timeRecommender(dateToSearch.weekDay, timezone, platform);
+            recommended = dateToSearch.set({
+                hour: timeHour,
+                minute: timeMin,
+                second: 0,
+                millisecond: 0,
+            });
+            dateCounter += 1;
         }
-        return null;
+
+        return recommended.toMillis();
     } catch (err) {
-        throw new APIError('Failed to get recommended post time today', 500);
+        throw new APIError('Failed to get recommended post time today or else', 500);
     }
 };
 
@@ -303,5 +310,5 @@ module.exports = {
     dateRecommenderWeekly,
     dateRecommenderMonthly,
     dateRecommenderEvent,
-    dateRecommenderToday,
+    dateRecommenderTodayOrElse,
 };

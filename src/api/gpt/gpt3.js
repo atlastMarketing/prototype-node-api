@@ -8,7 +8,7 @@ const {
     engineerSuggestionPrompt,
     calculateTemperature,
 } = require('./_prompt');
-const { dateRecommenderToday } = require('../campaign/_recommender');
+const { dateRecommenderTodayOrElse } = require('../campaign/_recommender');
 
 require('dotenv').config();
 
@@ -170,14 +170,14 @@ const generateSuggestion = async (req, res) => {
                 return completionTask;
             })),
         );
-        const today = dateRecommenderToday(promptInfo.platform, timezone);
+        const recommendedDate = dateRecommenderTodayOrElse(promptInfo.platform, timezone);
 
         // TODO: save token usage for the given user
         console.debug(`User "${userId}" used up ${totalTokenUsage} tokens for ${NUM_SUGGESTIONS} suggestion captions}`);
 
         // RETURN
         res.status(200).json({
-            date: today,
+            date: recommendedDate,
             completions: allCompletionData,
         });
     } catch (err) {
