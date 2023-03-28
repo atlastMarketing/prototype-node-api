@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const scheduler = require('./api/contentManager/scheduler'); 
 
 require('dotenv').config();
 
@@ -32,5 +33,7 @@ app.use('/api/v1', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
+
+scheduler.initScheduler(mongoose.connection);  
 
 module.exports = app;
