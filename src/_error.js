@@ -20,7 +20,15 @@ const handleGPTError = (err) => {
     throw new APIError(message, statusCode, source);
 };
 
+const handleMongoError = (err) => {
+    let source = `MONGO:${err.name}`;
+    if (err.code === 11000) source = `${err.name}:Duplicate`;
+
+    throw new APIError(err.errmsg, 400, source);
+};
+
 module.exports = {
     APIError,
     handleGPTError,
+    handleMongoError,
 };

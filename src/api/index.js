@@ -4,6 +4,7 @@ const campaign = require('./campaign');
 const gpt3 = require('./gpt/gpt3');
 const instagram = require('./instagram');
 const userProfile = require('./user');
+const content = require('./content');
 
 require('dotenv').config();
 
@@ -19,5 +20,6 @@ router.use('/ml', gpt3);
 router.use('/campaign', campaign);
 router.use('/user', userProfile);
 router.use('/instagram', instagram);
+router.use('/content', content);
 
 module.exports = router;
