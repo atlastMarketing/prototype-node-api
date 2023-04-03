@@ -28,7 +28,6 @@ router.get('/user/:userId', async (req, res) => {
         const { userId } = req.params;
 
         const data = await contentManager.findContentByUserId(userId);
-        console.log({ data });
 
         if (!data) {
             res.status(404).json([]);
@@ -110,7 +109,6 @@ router.delete('/:contentId', async (req, res) => {
 
         res.status(204).json({});
     } catch (err) {
-        console.log({ err });
         res.status(err.status || 400).json(err);
     }
 });
