@@ -3,6 +3,7 @@ const router = require('express').Router();
 
 const { handleGPTError, APIError } = require('../../_error');
 const { DEFAULT_TIMEZONE } = require('../../constants/defaults');
+const { GPT3_MOCKED_RESULT } = require('./_mock');
 const {
     engineerCaptionPrompt,
     engineerSuggestionPrompt,
@@ -20,6 +21,8 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+const AI_MOCK = process.env.AI_ENV === 'mock';
+
 const _fetchCompletion = async (prompt, options) => {
     try {
         const {
@@ -28,6 +31,10 @@ const _fetchCompletion = async (prompt, options) => {
             userId,
             maxTokens,
         } = options;
+
+        if (AI_MOCK) {
+            return GPT3_MOCKED_RESULT;
+        }
 
         const completion = await openai.createCompletion({
             model: 'text-davinci-003',
